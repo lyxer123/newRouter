@@ -1,0 +1,2 @@
+source D:/4g_nic/build/bootloader/gdbinit/symbols
+source D:/4g_nic/build/bootloader/gdbinit/connect

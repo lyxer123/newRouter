@@ -1,0 +1,13 @@
+# Target labels
+ bootloader
+# Source files and their labels
+D:/4g_nic/build/CMakeFiles/bootloader
+D:/4g_nic/build/CMakeFiles/bootloader.rule
+D:/4g_nic/build/CMakeFiles/bootloader-complete.rule
+D:/4g_nic/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule
+D:/4g_nic/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule
+D:/4g_nic/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule
+D:/4g_nic/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule
+D:/4g_nic/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule
+D:/4g_nic/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule
+D:/4g_nic/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule

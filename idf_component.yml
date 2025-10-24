@@ -1,0 +1,3 @@
+dependencies:
+  idf: '>=5.0'
+  espressif/ch390: '0.3.0'
