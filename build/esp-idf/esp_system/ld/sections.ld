@@ -1,6 +1,6 @@
 /* Automatically generated file; DO NOT EDIT */
 /* Espressif IoT Development Framework Linker Script */
-/* Generated from: D:\4g_nic\build\esp-idf\esp_system\ld\sections.ld.in */
+/* Generated from: C:\Users\yongx\Desktop\router4g-0.03\build\esp-idf\esp_system\ld\sections.ld.in */
 
 /*
 

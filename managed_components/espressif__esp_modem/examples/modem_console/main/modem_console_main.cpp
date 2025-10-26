@@ -21,7 +21,6 @@
 #include "cxx_include/esp_modem_dte.hpp"
 #include "esp_modem_config.h"
 #include "cxx_include/esp_modem_api.hpp"
-#include "esp_idf_version.h"
 #if defined(CONFIG_EXAMPLE_SERIAL_CONFIG_USB)
 #include "esp_modem_usb_config.h"
 #include "cxx_include/esp_modem_usb_api.hpp"
@@ -29,12 +28,6 @@
 #include "esp_log.h"
 #include "console_helper.hpp"
 #include "my_module_dce.hpp"
-
-#if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(6, 0, 0)
-#define GET_WAKEUP_CAUSE() esp_sleep_get_wakeup_causes()
-#else
-#define GET_WAKEUP_CAUSE() esp_sleep_get_wakeup_cause()
-#endif
 
 #if defined(CONFIG_EXAMPLE_FLOW_CONTROL_NONE)
 #define EXAMPLE_FLOW_CONTROL ESP_MODEM_FLOW_CONTROL_NONE
@@ -215,7 +208,7 @@ extern "C" void app_main(void)
     esp_console_dev_uart_config_t uart_config = ESP_CONSOLE_DEV_UART_CONFIG_DEFAULT();
     ESP_ERROR_CHECK(esp_console_new_repl_uart(&uart_config, &repl_config, &s_repl));
 
-    switch (GET_WAKEUP_CAUSE()) {
+    switch (esp_sleep_get_wakeup_cause()) {
     case ESP_SLEEP_WAKEUP_TIMER:
         if (esp_modem::modem_mode::CMUX_MODE == mode_rtc) {
             ESP_LOGI(TAG, "Deep sleep reset\n");
@@ -434,7 +427,7 @@ extern "C" void app_main(void)
     const ConsoleCommand SetDeepSleep("set_deep_sleep", "Put esp32 to deep sleep", &deep_sleep_args, sizeof(deep_sleep_args), [&](ConsoleCommand * c) {
         int tout = c->get_int_of(&DeepSleepArgs::timeout);
         ESP_LOGI(TAG, "Entering deep sleep for %d sec", tout);
-        ESP_LOGI(TAG, "Wakeup Cause: %d ", GET_WAKEUP_CAUSE());
+        ESP_LOGI(TAG, "Wakeup Cause: %d ", esp_sleep_get_wakeup_cause());
         esp_deep_sleep(tout * 1000000);
         return 0;
     });

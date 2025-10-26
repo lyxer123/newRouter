@@ -13,8 +13,8 @@ end
 
 # Load bootloader symbols
 set confirm off
-    add-symbol-file D:/4g_nic/build/bootloader/bootloader.elf
+    add-symbol-file C:/Users/yongx/Desktop/router4g-0.03/build/bootloader/bootloader.elf
 set confirm on
 
 # Load application symbols
-file D:/4g_nic/build/4g_nic.elf
+file C:/Users/yongx/Desktop/router4g-0.03/build/router4g-0.03.elf

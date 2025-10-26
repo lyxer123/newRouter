@@ -1,4 +1,4 @@
-# Install script for directory: E:/github/esp-idf/components/xtensa
+# Install script for directory: E:/github/v5.5.1/esp-idf/components/xtensa
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

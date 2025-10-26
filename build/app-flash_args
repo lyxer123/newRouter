@@ -1,2 +1,2 @@
---flash_mode dio --flash_freq 80m --flash_size 16MB
-0x10000 4g_nic.bin
+--flash_mode dio --flash_freq 80m --flash_size 8MB
+0x10000 router4g-0.03.bin

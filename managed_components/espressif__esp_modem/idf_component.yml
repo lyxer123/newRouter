@@ -6,7 +6,7 @@ documentation: https://docs.espressif.com/projects/esp-protocols/esp_modem/docs/
 issues: https://github.com/espressif/esp-protocols/issues
 repository: git://github.com/espressif/esp-protocols.git
 repository_info:
-  commit_sha: 2cc7c99664caf9705064affba6ea829137d4e1e8
+  commit_sha: b710dbd2addc877d1a9e495eea08683ccd035be2
   path: components/esp_modem
 url: https://github.com/espressif/esp-protocols/tree/master/components/esp_modem
-version: 1.4.1
+version: 1.4.0

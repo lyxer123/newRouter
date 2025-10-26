@@ -1,4 +1,4 @@
-# Install script for directory: E:/github/esp-idf/components/bootloader/subproject/main
+# Install script for directory: E:/github/v5.5.1/esp-idf/components/bootloader/subproject/main
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)

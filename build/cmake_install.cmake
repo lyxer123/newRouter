@@ -1,8 +1,8 @@
-# Install script for directory: D:/4g_nic
+# Install script for directory: C:/Users/yongx/Desktop/router4g-0.03
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/4g_nic")
+  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/router4g-0.03")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -39,7 +39,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("D:/4g_nic/build/esp-idf/cmake_install.cmake")
+  include("C:/Users/yongx/Desktop/router4g-0.03/build/esp-idf/cmake_install.cmake")
 
 endif()
 
@@ -58,6 +58,6 @@ endif()
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-  file(WRITE "D:/4g_nic/build/${CMAKE_INSTALL_MANIFEST}"
+  file(WRITE "C:/Users/yongx/Desktop/router4g-0.03/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()

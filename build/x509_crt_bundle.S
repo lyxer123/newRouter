@@ -1,4 +1,4 @@
-/* * Data converted from D:/4g_nic/build/esp-idf/mbedtls/x509_crt_bundle
+/* * Data converted from C:/Users/yongx/Desktop/router4g-0.03/build/esp-idf/mbedtls/x509_crt_bundle
  */
 .data
 #if !defined (__APPLE__) && !defined (__linux__)

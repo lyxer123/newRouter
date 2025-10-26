@@ -1,8 +1,8 @@
-# Install script for directory: E:/github/esp-idf/components/mbedtls/mbedtls/3rdparty
+# Install script for directory: E:/github/v5.5.1/esp-idf/components/mbedtls/mbedtls/3rdparty
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/4g_nic")
+  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/router4g-0.03")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -39,8 +39,8 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("D:/4g_nic/build/esp-idf/mbedtls/mbedtls/3rdparty/everest/cmake_install.cmake")
-  include("D:/4g_nic/build/esp-idf/mbedtls/mbedtls/3rdparty/p256-m/cmake_install.cmake")
+  include("C:/Users/yongx/Desktop/router4g-0.03/build/esp-idf/mbedtls/mbedtls/3rdparty/everest/cmake_install.cmake")
+  include("C:/Users/yongx/Desktop/router4g-0.03/build/esp-idf/mbedtls/mbedtls/3rdparty/p256-m/cmake_install.cmake")
 
 endif()
 

@@ -1,8 +1,8 @@
-# Install script for directory: D:/4g_nic/managed_components/espressif__iot_bridge
+# Install script for directory: C:/Users/yongx/Desktop/router4g-0.03/managed_components/espressif__iot_bridge
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/4g_nic")
+  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/router4g-0.03")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 

@@ -1,4 +1,4 @@
-# Install script for directory: E:/github/esp-idf/components/esp_system
+# Install script for directory: E:/github/v5.5.1/esp-idf/components/esp_system
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
