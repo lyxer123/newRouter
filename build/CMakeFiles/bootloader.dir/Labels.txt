@@ -1,13 +1,13 @@
 # Target labels
  bootloader
 # Source files and their labels
-C:/Users/yongx/Desktop/router4g-0.03/build/CMakeFiles/bootloader
-C:/Users/yongx/Desktop/router4g-0.03/build/CMakeFiles/bootloader.rule
-C:/Users/yongx/Desktop/router4g-0.03/build/CMakeFiles/bootloader-complete.rule
-C:/Users/yongx/Desktop/router4g-0.03/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule
-C:/Users/yongx/Desktop/router4g-0.03/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule
-C:/Users/yongx/Desktop/router4g-0.03/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule
-C:/Users/yongx/Desktop/router4g-0.03/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule
-C:/Users/yongx/Desktop/router4g-0.03/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule
-C:/Users/yongx/Desktop/router4g-0.03/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule
-C:/Users/yongx/Desktop/router4g-0.03/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule
+E:/github/newRouter/build/CMakeFiles/bootloader
+E:/github/newRouter/build/CMakeFiles/bootloader.rule
+E:/github/newRouter/build/CMakeFiles/bootloader-complete.rule
+E:/github/newRouter/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule
+E:/github/newRouter/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule
+E:/github/newRouter/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule
+E:/github/newRouter/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule
+E:/github/newRouter/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule
+E:/github/newRouter/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule
+E:/github/newRouter/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule

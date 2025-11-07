@@ -17,4 +17,4 @@ set confirm off
 set confirm on
 
 # Load application symbols
-file C:/Users/yongx/Desktop/router4g-0.03/build/bootloader/bootloader.elf
+file E:/github/newRouter/build/bootloader/bootloader.elf

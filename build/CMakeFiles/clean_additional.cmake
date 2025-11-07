@@ -16,9 +16,9 @@ if("${CONFIG}" STREQUAL "" OR "${CONFIG}" STREQUAL "")
   "flasher_args.json"
   "ldgen_libraries"
   "ldgen_libraries.in"
+  "newRouter.bin"
+  "newRouter.map"
   "project_elf_src_esp32s3.c"
-  "router4g-0.03.bin"
-  "router4g-0.03.map"
   "x509_crt_bundle.S"
   )
 endif()

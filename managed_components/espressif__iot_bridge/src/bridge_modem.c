@@ -173,14 +173,14 @@ esp_netif_t *esp_bridge_create_modem_netif(esp_netif_ip_info_t *custom_ip_info, 
 
 #elif (defined(CONFIG_BRIDGE_SERIAL_VIA_USB)) && (ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(4, 4, 0))
 
-    ESP_LOGI(TAG, "Initializing esp_modem for the EC600N module...");
+    ESP_LOGI(TAG, "Initializing esp_modem for the A7680C module...");
     struct esp_modem_usb_term_config usb_config = ESP_MODEM_DEFAULT_USB_CONFIG(CONFIG_BRIDGE_MODEM_USB_VID, CONFIG_BRIDGE_MODEM_USB_PID, CONFIG_BRIDGE_MODEM_USB_INTERFACE_NUMBER); // VID, PID and interface num of 4G modem
     const esp_modem_dte_config_t dte_usb_config = ESP_MODEM_DTE_DEFAULT_USB_CONFIG(usb_config);
     ESP_LOGI(TAG, "Waiting for USB device connection...");
     esp_modem_dce_t *dce = esp_modem_new_dev_usb(ESP_MODEM_DCE_GENERIC, &dte_usb_config, &dce_config, esp_netif);
     assert(dce);
     esp_modem_set_error_cb(dce, usb_terminal_error_handler);
-    vTaskDelay(pdMS_TO_TICKS(7000)); // Although the DTE should be ready after USB enumeration, sometimes it fails to respond without this delay
+    vTaskDelay(pdMS_TO_TICKS(1000)); // Although the DTE should be ready after USB enumeration, sometimes it fails to respond without this delay
 
 #else
 #error Invalid serial connection to modem.
