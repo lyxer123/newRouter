@@ -276,11 +276,27 @@ esp_err_t esp_bridge_netif_network_segment_conflict_update(esp_netif_t* esp_neti
 
 esp_netif_t* esp_bridge_create_netif(esp_netif_config_t* config, esp_netif_ip_info_t* custom_ip_info, uint8_t custom_mac[6], bool enable_dhcps)
 {
+    // Check if config is valid
+    if (!config || !config->base || !config->base->if_key) {
+        ESP_LOGE(TAG, "Invalid network interface configuration");
+        return NULL;
+    }
+    
+    // Check if an interface with the same key already exists
+    esp_netif_t* existing_netif = esp_netif_get_handle_from_ifkey(config->base->if_key);
+    if (existing_netif) {
+        ESP_LOGW(TAG, "Network interface with key '%s' already exists", config->base->if_key);
+        return existing_netif;
+    }
+    
     esp_netif_ip_info_t allocate_ip_info = { 0 };
     uint8_t allocate_mac[6] = { 0 };
     esp_netif_t* netif = esp_netif_new(config);
-    assert(netif);
-
+    if (!netif) {
+        ESP_LOGE(TAG, "Failed to create network interface with key '%s'", config->base->if_key);
+        return NULL;
+    }
+    
     esp_netif_dhcps_stop(netif);
     if (custom_ip_info) { // Custom IP
         esp_netif_set_ip_info(netif, custom_ip_info);
@@ -290,7 +306,7 @@ esp_netif_t* esp_bridge_create_netif(esp_netif_config_t* config, esp_netif_ip_in
             esp_netif_set_ip_info(netif, &allocate_ip_info);
         }
     }
-
+    
     if (custom_mac) { // Custom MAC
         ESP_ERROR_CHECK(esp_netif_set_mac(netif, custom_mac));
     } else {
@@ -302,7 +318,7 @@ esp_netif_t* esp_bridge_create_netif(esp_netif_config_t* config, esp_netif_ip_in
     // Start the netif in a manual way, no need for events
     esp_netif_action_start(netif, NULL, 0, NULL);
     esp_netif_up(netif);
-
+    
     if (enable_dhcps) {
         esp_netif_dns_info_t dns;
         dns.ip.u_addr.ip4.addr = ipaddr_addr(CONFIG_BRIDGE_STATIC_DNS_SERVER_MAIN);
@@ -312,7 +328,7 @@ esp_netif_t* esp_bridge_create_netif(esp_netif_config_t* config, esp_netif_ip_in
         ESP_ERROR_CHECK(esp_netif_set_dns_info(netif, ESP_NETIF_DNS_MAIN, &dns));
         ESP_ERROR_CHECK(esp_netif_dhcps_start(netif));
     }
-
+    
     return netif;
 }
 
@@ -643,11 +659,26 @@ void esp_bridge_create_all_netif(void)
 #endif
 
 #if defined(CONFIG_BRIDGE_DATA_FORWARDING_NETIF_ETHERNET) || defined(CONFIG_BRIDGE_NETIF_ETHERNET_AUTO_WAN_OR_LAN)
-    esp_bridge_create_eth_netif(NULL, NULL, true, true);
+    // Only create single ethernet interface if dual ethernet is not enabled
+    #if !defined(CONFIG_BRIDGE_DUAL_ETHERNET_SUPPORT)
+        esp_bridge_create_eth_netif(NULL, NULL, true, true);
+    #endif
 #endif
 
 #if defined(CONFIG_BRIDGE_EXTERNAL_NETIF_ETHERNET) || defined(CONFIG_BRIDGE_NETIF_ETHERNET_AUTO_WAN_OR_LAN)
-    esp_bridge_create_eth_netif(NULL, NULL, false, false);
+    // Only create single ethernet interface if dual ethernet is not enabled
+    #if !defined(CONFIG_BRIDGE_DUAL_ETHERNET_SUPPORT)
+        esp_bridge_create_eth_netif(NULL, NULL, false, false);
+    #endif
+#endif
+
+// Add dual ethernet support
+#if defined(CONFIG_BRIDGE_DUAL_ETHERNET_SUPPORT)
+    // Create dual ethernet interfaces
+    // For dual ethernet, we need to pass specific parameters to avoid conflicts
+    uint8_t mac0[6] = {0x02, 0x00, 0x00, 0x12, 0x34, 0x57};
+    uint8_t mac1[6] = {0x02, 0x00, 0x00, 0x12, 0x34, 0x58};
+    esp_bridge_create_dual_eth_netif(NULL, mac0, true, true, NULL, mac1, false, false);
 #endif
 
 #if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(4, 4, 0)

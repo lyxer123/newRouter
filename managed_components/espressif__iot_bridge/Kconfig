@@ -14,6 +14,14 @@ menu "Bridge Configuration"
         bool "Enable Ethernet interface"
         default y
 
+    config BRIDGE_DUAL_ETHERNET_SUPPORT
+        depends on BRIDGE_ETHERNET_NETIF_ENABLE
+        bool "Enable Dual Ethernet interfaces support"
+        default n
+        help
+            Enable support for dual Ethernet interfaces. This allows connecting two Ethernet modules simultaneously.
+            Requires proper hardware configuration with two SPI Ethernet modules.
+
     config BRIDGE_NETIF_ETHERNET_AUTO_WAN_OR_LAN
         depends on BRIDGE_ETHERNET_NETIF_ENABLE
         bool "Ethernet acts as WAN or LAN automatically"
@@ -369,6 +377,48 @@ menu "Bridge Configuration"
                 default 1
                 help
                     Set the first SPI Ethernet module PHY address according your board schematic.
+                
+            # Add configuration options for the second SPI Ethernet module
+            # These options should only appear when dual ethernet support is enabled
+            if BRIDGE_DUAL_ETHERNET_SUPPORT
+            config BRIDGE_ETH_SPI_CS1_GPIO
+                int "SPI CS1 GPIO number for SPI Ethernet module #2"
+                range BRIDGE_GPIO_RANGE_MIN BRIDGE_GPIO_RANGE_MAX
+                default 16 if IDF_TARGET_ESP32
+                default 11 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32C3 || IDF_TARGET_ESP32S3
+                default 4 if IDF_TARGET_ESP32C6 || IDF_TARGET_ESP32C5
+                default 2 if IDF_TARGET_ESP32H2
+                default 22 if IDF_TARGET_ESP32P4
+                default 1 if IDF_TARGET_ESP32C61
+                help
+                    Set the GPIO number used by SPI CS1, i.e. Chip Select associated with the second SPI Eth module.
+                
+            config BRIDGE_ETH_SPI_INT1_GPIO
+                int "Interrupt GPIO number SPI Ethernet module #2"
+                range BRIDGE_GPIO_RANGE_MIN BRIDGE_GPIO_RANGE_MAX
+                default 5 if IDF_TARGET_ESP32 || IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32C3 || IDF_TARGET_ESP32S3
+                default 5 if IDF_TARGET_ESP32C2 || IDF_TARGET_ESP32C6 || IDF_TARGET_ESP32C5
+                default 11 if IDF_TARGET_ESP32H2
+                default 49 if IDF_TARGET_ESP32P4
+                default 1 if IDF_TARGET_ESP32C61
+                help
+                    Set the GPIO number used by the second SPI Ethernet module interrupt line.
+                
+            config BRIDGE_ETH_SPI_PHY_RST1_GPIO
+                int "PHY Reset GPIO number of SPI Ethernet Module #2"
+                range -1 BRIDGE_GPIO_RANGE_MAX
+                default -1
+                help
+                    Set the GPIO number used to reset PHY chip on the second SPI Ethernet module.
+                    Set to -1 to disable PHY chip hardware reset.
+                
+            config BRIDGE_ETH_SPI_PHY_ADDR1
+                int "PHY Address of SPI Ethernet Module #2"
+                range 0 31
+                default 1
+                help
+                    Set the second SPI Ethernet module PHY address according your board schematic.
+            endif # BRIDGE_DUAL_ETHERNET_SUPPORT
         endif # BRIDGE_USE_SPI_ETHERNET
     endmenu
 

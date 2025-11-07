@@ -25,6 +25,7 @@
 - 一根以太网线
 - 一根USB通信线
 - 一些杜邦线用于连接MCU的SPI或SDIO接口
+- 第二个以太网模块（用于双网卡功能）
 
 请按照为此示例提供的详细说明进行操作。
 
@@ -72,6 +73,36 @@ Bridge ETH SPI CS0 GPIO number for SPI Ethernet module #1 (10) → 10
 Bridge ETH SPI Interrupt GPIO number SPI Ethernet module #1 (11) → 11
 Bridge ETH SPI PHY Reset GPIO number of SPI Ethernet Module #1 (12) → 12
 Bridge ETH SPI PHY Address of SPI Ethernet Module #1 (1) → 1
+```
+
+#### 双网卡以太网配置（可选）
+
+本项目支持双网卡以太网功能，可以同时连接两个以太网模块。
+
+**硬件连接:**
+- 第一个以太网模块（如W5500）连接到SPI接口
+- 第二个以太网模块（如CH390）连接到同一SPI总线，但使用不同的CS引脚
+
+**menuconfig中的配置参数:**
+```
+Component config → Bridge Configuration → ETH Configuration
+[*] Enable Ethernet interface (NEW)
+[*] SPI Ethernet (NEW)
+[*] Enable Dual Ethernet interfaces support (NEW)
+
+Bridge ETH SPI Host Number (1) → 1
+Bridge ETH SPI SCLK GPIO number (9) → 9
+Bridge ETH SPI MOSI GPIO number (3) → 3
+Bridge ETH SPI MISO GPIO number (46) → 46
+Bridge ETH SPI clock speed (MHz) (23) → 23   (最大值60MHz)
+Bridge ETH SPI CS0 GPIO number for SPI Ethernet module #1 (10) → 10
+Bridge ETH SPI Interrupt GPIO number SPI Ethernet module #1 (11) → 11
+Bridge ETH SPI PHY Reset GPIO number of SPI Ethernet Module #1 (12) → 12
+Bridge ETH SPI PHY Address of SPI Ethernet Module #1 (1) → 1
+Bridge ETH SPI CS1 GPIO number for SPI Ethernet module #2 (16) → 16
+Bridge ETH SPI Interrupt GPIO number SPI Ethernet module #2 (4) → 4
+Bridge ETH SPI PHY Reset GPIO number of SPI Ethernet Module #2 (5) → 5
+Bridge ETH SPI PHY Address of SPI Ethernet Module #2 (1) → 1
 ```
 
 #### 修改bridge_modem.c文件（espressif__iot_bridge 0.11.9 版本）
