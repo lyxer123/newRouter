@@ -38,7 +38,7 @@
 898	1857	7842721405174209	esp-idf/esp_system/CMakeFiles/__idf_esp_system.dir/esp_err.c.obj	5aa66a296ed1b5d8
 1693	2916	7842721413126849	esp-idf/bootloader_support/CMakeFiles/__idf_bootloader_support.dir/src/flash_encrypt.c.obj	fe470d11371d3ff0
 566	1187	7842721401854808	esp-idf/esp_hw_support/CMakeFiles/__idf_esp_hw_support.dir/cpu.c.obj	9aacdae5dc7f0633
-45	145	7842732760640008	E:/github/newRouter/build/bootloader/esp-idf/esptool_py/CMakeFiles/bootloader_check_size	e24e714d9340b87f
+30	129	7842872760015193	E:/github/newRouter/build/bootloader/esp-idf/esptool_py/CMakeFiles/bootloader_check_size	e24e714d9340b87f
 858	1597	7842721404781294	esp-idf/esp_hw_support/CMakeFiles/__idf_esp_hw_support.dir/port/esp32s3/chip_info.c.obj	7e63708f5e1bedd9
 921	1763	7842721405407145	esp-idf/efuse/CMakeFiles/__idf_efuse.dir/esp32s3/esp_efuse_table.c.obj	872d4c6464baeb39
 1011	1983	7842721406310120	esp-idf/efuse/CMakeFiles/__idf_efuse.dir/esp32s3/esp_efuse_rtc_calib.c.obj	fea278216642b81
@@ -52,7 +52,7 @@
 966	1822	7842721405857413	esp-idf/efuse/CMakeFiles/__idf_efuse.dir/esp32s3/esp_efuse_fields.c.obj	d5d988a5921ccee8
 708	1693	7842721403275872	esp-idf/esp_hw_support/CMakeFiles/__idf_esp_hw_support.dir/port/esp32s3/rtc_clk.c.obj	3789f8ffae2b9cd3
 2096	2833	7842721417159987	esp-idf/bootloader_support/CMakeFiles/__idf_bootloader_support.dir/src/bootloader_clock_loader.c.obj	db5cd43d5ec51f66
-7	12447	7842740750806810	build.ninja	c1f48e71a97519d4
+92	17481	7842875538192916	build.ninja	c1f48e71a97519d4
 3441	4408	7842721430607648	esp-idf/soc/CMakeFiles/__idf_soc.dir/esp32s3/adc_periph.c.obj	e22acb352756851b
 1041	2002	7842721406603193	esp-idf/efuse/CMakeFiles/__idf_efuse.dir/esp32s3/esp_efuse_utility.c.obj	4ba6f2d95d203413
 1098	2066	7842721407184208	esp-idf/efuse/CMakeFiles/__idf_efuse.dir/src/esp_efuse_api.c.obj	8a08f9b121b39276
@@ -125,7 +125,11 @@
 6904	7169	7842721465229334	bootloader.elf	8d78e1de4805a8ef
 7169	7608	7842721472172428	.bin_timestamp	b518c74c8af7f025
 7169	7608	7842721472172428	E:/github/newRouter/build/bootloader/.bin_timestamp	b518c74c8af7f025
-45	145	7842732760640008	esp-idf/esptool_py/CMakeFiles/bootloader_check_size	e24e714d9340b87f
-5	8338	7842740750806810	build.ninja	c1f48e71a97519d4
-50	159	7842740751938166	esp-idf/esptool_py/CMakeFiles/bootloader_check_size	e24e714d9340b87f
-50	159	7842740751938166	E:/github/newRouter/build/bootloader/esp-idf/esptool_py/CMakeFiles/bootloader_check_size	e24e714d9340b87f
+30	129	7842872760015193	esp-idf/esptool_py/CMakeFiles/bootloader_check_size	e24e714d9340b87f
+25	28593	7842875538192916	build.ninja	c1f48e71a97519d4
+70	455	7842875541440167	esp-idf/esptool_py/CMakeFiles/bootloader_check_size	e24e714d9340b87f
+70	455	7842875541440167	E:/github/newRouter/build/bootloader/esp-idf/esptool_py/CMakeFiles/bootloader_check_size	e24e714d9340b87f
+37	172	7842879709280896	esp-idf/esptool_py/CMakeFiles/bootloader_check_size	e24e714d9340b87f
+37	172	7842879709280896	E:/github/newRouter/build/bootloader/esp-idf/esptool_py/CMakeFiles/bootloader_check_size	e24e714d9340b87f
+33	129	7842880058429773	esp-idf/esptool_py/CMakeFiles/bootloader_check_size	e24e714d9340b87f
+33	129	7842880058429773	E:/github/newRouter/build/bootloader/esp-idf/esptool_py/CMakeFiles/bootloader_check_size	e24e714d9340b87f

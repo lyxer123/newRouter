@@ -35694,6 +35694,58 @@
                                 ],
                                 "title": "PHY Address of SPI Ethernet Module #1",
                                 "type": "int"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "BRIDGE_USE_SPI_ETHERNET && BRIDGE_ETHERNET_NETIF_ENABLE",
+                                "help": "Set the GPIO number used by SPI CS1, i.e. Chip Select for the second W5500 module.\nNote: Card1 and Card2 share the same SPI bus (SCK=GPIO9, MOSI=GPIO3, MISO=GPIO46).",
+                                "id": "BRIDGE_ETH_SPI_CS1_GPIO",
+                                "name": "BRIDGE_ETH_SPI_CS1_GPIO",
+                                "range": [
+                                    0,
+                                    48
+                                ],
+                                "title": "SPI CS1 GPIO number for SPI Ethernet module #2",
+                                "type": "int"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "BRIDGE_USE_SPI_ETHERNET && BRIDGE_ETHERNET_NETIF_ENABLE",
+                                "help": "Set the GPIO number used by the second SPI Ethernet module interrupt line.",
+                                "id": "BRIDGE_ETH_SPI_INT1_GPIO",
+                                "name": "BRIDGE_ETH_SPI_INT1_GPIO",
+                                "range": [
+                                    0,
+                                    48
+                                ],
+                                "title": "Interrupt GPIO number SPI Ethernet module #2",
+                                "type": "int"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "BRIDGE_USE_SPI_ETHERNET && BRIDGE_ETHERNET_NETIF_ENABLE",
+                                "help": "Set the GPIO number used to reset PHY chip on the second SPI Ethernet module.\nSet to -1 to disable PHY chip hardware reset.",
+                                "id": "BRIDGE_ETH_SPI_PHY_RST1_GPIO",
+                                "name": "BRIDGE_ETH_SPI_PHY_RST1_GPIO",
+                                "range": [
+                                    -1,
+                                    48
+                                ],
+                                "title": "PHY Reset GPIO number of SPI Ethernet Module #2",
+                                "type": "int"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "BRIDGE_USE_SPI_ETHERNET && BRIDGE_ETHERNET_NETIF_ENABLE",
+                                "help": "Set the second SPI Ethernet module PHY address according your board schematic.",
+                                "id": "BRIDGE_ETH_SPI_PHY_ADDR1",
+                                "name": "BRIDGE_ETH_SPI_PHY_ADDR1",
+                                "range": [
+                                    0,
+                                    31
+                                ],
+                                "title": "PHY Address of SPI Ethernet Module #2",
+                                "type": "int"
                             }
                         ],
                         "depends_on": "BRIDGE_ETHERNET_NETIF_ENABLE",

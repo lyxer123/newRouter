@@ -616,12 +616,8 @@ void esp_bridge_create_all_netif(void)
     ESP_LOGI(TAG, "esp-iot-bridge version: %d.%d.%d", IOT_BRIDGE_VER_MAJOR, IOT_BRIDGE_VER_MINOR, IOT_BRIDGE_VER_PATCH);
 
 #if defined(CONFIG_BRIDGE_DATA_FORWARDING_NETIF_SOFTAP)
-    esp_bridge_create_softap_netif(NULL, NULL, true, true);
-#if defined(CONFIG_BRIDGE_WIFI_PMF_DISABLE)
-    esp_wifi_disable_pmf_config(WIFI_IF_AP);
-    ESP_LOGI(TAG, "DHCPS Restart, deauth all station");
-    esp_wifi_deauth_sta(0);
-#endif
+    uint8_t softap_mac[6] = {0x0, 0x1, 0x2, 0x3, 0x4, 0x5};
+    esp_bridge_create_softap_netif(NULL, softap_mac, true, true);
 #endif
 
 #if defined(CONFIG_BRIDGE_DATA_FORWARDING_NETIF_USB)
