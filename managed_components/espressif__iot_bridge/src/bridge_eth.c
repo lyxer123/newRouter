@@ -104,11 +104,18 @@ static void got_ip_event_handler(void *arg, esp_event_base_t event_base,
 #endif
 void esp_bridge_eth_event_handler_register(void)
 {
-    // Register user defined event handers
-    ESP_ERROR_CHECK(esp_event_handler_register(ETH_EVENT, ESP_EVENT_ANY_ID, &eth_event_handler, NULL));
+    static bool event_handlers_registered = false;
+    
+    // Register user defined event handlers only once to avoid duplicate logs
+    // Note: Link Up/Down events are physical layer events and cannot distinguish between LAN/WAN
+    // because LAN and WAN are logical interfaces sharing the same physical Ethernet interface
+    if (!event_handlers_registered) {
+        ESP_ERROR_CHECK(esp_event_handler_register(ETH_EVENT, ESP_EVENT_ANY_ID, &eth_event_handler, NULL));
 #if defined(CONFIG_BRIDGE_EXTERNAL_NETIF_ETHERNET) || defined(CONFIG_BRIDGE_NETIF_ETHERNET_AUTO_WAN_OR_LAN)
-    ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_ETH_GOT_IP, &got_ip_event_handler, NULL));
+        ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_ETH_GOT_IP, &got_ip_event_handler, NULL));
 #endif /* CONFIG_BRIDGE_EXTERNAL_NETIF_ETHERNET */
+        event_handlers_registered = true;
+    }
 }
 
 #if CONFIG_BRIDGE_USE_INTERNAL_ETHERNET

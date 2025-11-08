@@ -192,11 +192,28 @@ static void eth_action_assigned_ip(void *handler_args, esp_event_base_t base, in
 {
     ip_event_ap_staipassigned_t *ip_event = (ip_event_ap_staipassigned_t *)event_data;
     esp_eth_netif_glue_t *netif_glue = handler_args;
+    static esp_ip4_addr_t last_lan_assigned_ip = {0};
+    static esp_ip4_addr_t last_wan_assigned_ip = {0};
+    
     ESP_LOGD(TAG, "eth_action_assigned_ip: %p, %p, %" PRIi32 ", %p, %p", netif_glue, base, event_id, event_data, *(esp_eth_handle_t *)event_data);
-    if (eth_lan_netif == ip_event->esp_netif) {
-        esp_netif_down(eth_wan_netif);
-        // esp_netif_action_got_ip(ip_event->esp_netif, base, event_id, event_data);
-        ESP_LOGI(TAG, "DHCP server assigned IP to LAN, IP is: " IPSTR, IP2STR(&ip_event->ip));
+    
+    // Check if this event is for the netif associated with this glue instance
+    if (netif_glue->base.netif == ip_event->esp_netif) {
+        if (eth_lan_netif == ip_event->esp_netif) {
+            // Only log if IP changed to avoid duplicate logs
+            if (last_lan_assigned_ip.addr != ip_event->ip.addr || last_lan_assigned_ip.addr == 0) {
+                last_lan_assigned_ip.addr = ip_event->ip.addr;
+                esp_netif_down(eth_wan_netif);
+                // esp_netif_action_got_ip(ip_event->esp_netif, base, event_id, event_data);
+                ESP_LOGI(TAG, "DHCP server assigned IP to LAN, IP is: " IPSTR, IP2STR(&ip_event->ip));
+            }
+        } else if (eth_wan_netif == ip_event->esp_netif) {
+            // Only log if IP changed to avoid duplicate logs
+            if (last_wan_assigned_ip.addr != ip_event->ip.addr || last_wan_assigned_ip.addr == 0) {
+                last_wan_assigned_ip.addr = ip_event->ip.addr;
+                ESP_LOGI(TAG, "DHCP server assigned IP to WAN, IP is: " IPSTR, IP2STR(&ip_event->ip));
+            }
+        }
     }
 }
 

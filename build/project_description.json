@@ -1,7 +1,7 @@
 {
     "version":            "1.2",
     "project_name":       "newRouter",
-    "project_version":    "V0.0.2-3-ga8877ca-dirty",
+    "project_version":    "V0.0.2-4-gebe69a3-dirty",
     "project_path":       "E:/github/newRouter",
     "idf_path":           "E:/github/v5.5.1/esp-idf",
     "build_dir":          "E:/github/newRouter/build",
