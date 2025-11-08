@@ -369,6 +369,37 @@ menu "Bridge Configuration"
                 default 1
                 help
                     Set the first SPI Ethernet module PHY address according your board schematic.
+                
+            # 卡2控制信号配置（共享SPI总线）
+            config BRIDGE_ETH_SPI_CS1_GPIO
+                int "SPI CS1 GPIO number for SPI Ethernet module #2"
+                range BRIDGE_GPIO_RANGE_MIN BRIDGE_GPIO_RANGE_MAX
+                default 11 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
+                help
+                    Set the GPIO number used by SPI CS1, i.e. Chip Select for the second W5500 module.
+                    Note: Card1 and Card2 share the same SPI bus (SCK=GPIO9, MOSI=GPIO3, MISO=GPIO46).
+
+            config BRIDGE_ETH_SPI_INT1_GPIO
+                int "Interrupt GPIO number SPI Ethernet module #2"
+                range BRIDGE_GPIO_RANGE_MIN BRIDGE_GPIO_RANGE_MAX
+                default 13 if IDF_TARGET_ESP32S2 || IDF_TARGET_ESP32S3
+                help
+                    Set the GPIO number used by the second SPI Ethernet module interrupt line.
+
+            config BRIDGE_ETH_SPI_PHY_RST1_GPIO
+                int "PHY Reset GPIO number of SPI Ethernet Module #2"
+                range -1 BRIDGE_GPIO_RANGE_MAX
+                default 34 if IDF_TARGET_ESP32S3
+                help
+                    Set the GPIO number used to reset PHY chip on the second SPI Ethernet module.
+                    Set to -1 to disable PHY chip hardware reset.
+
+            config BRIDGE_ETH_SPI_PHY_ADDR1
+                int "PHY Address of SPI Ethernet Module #2"
+                range 0 31
+                default 1
+                help
+                    Set the second SPI Ethernet module PHY address according your board schematic.
         endif # BRIDGE_USE_SPI_ETHERNET
     endmenu
 
