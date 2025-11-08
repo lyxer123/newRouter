@@ -31,13 +31,8 @@
 #include "sdkconfig.h"
 
 static const char *TAG = "bridge_eth";
-static esp_eth_phy_t *phy = NULL;
 
-// Add static variables to track created interfaces for dual ethernet support
-#if defined(CONFIG_BRIDGE_DUAL_ETHERNET_SUPPORT)
-static bool first_eth_lan_created = false;
-static bool first_eth_wan_created = false;
-#endif
+static esp_eth_phy_t *phy = NULL;
 
 #if defined(CONFIG_BRIDGE_NETIF_ETHERNET_AUTO_WAN_OR_LAN)
 esp_eth_netif_glue_handle_t esp_bridge_eth_new_netif_glue(esp_eth_handle_t eth_hdl);
@@ -402,38 +397,25 @@ esp_netif_t* esp_bridge_create_eth_netif(esp_netif_ip_info_t* ip_info, uint8_t m
 #if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(4, 4, 0)
         .lost_ip_event = IP_EVENT_ETH_LOST_IP,
 #endif
-        .if_key = data_forwarding ? "ETH_LAN" : "ETH_WAN",
+        .if_key = "ETH_WAN",
         .if_desc = "eth",
         .flags = (esp_netif_flags_t)(ESP_NETIF_FLAG_GARP | ESP_NETIF_FLAG_EVENT_IP_MODIFIED),
-        .route_prio = data_forwarding ? 10 : 50,
+        .route_prio = 50,
     };
 
     if (data_forwarding) {
         esp_netif_common_config.flags |= ESP_NETIF_DHCP_SERVER;
+        esp_netif_common_config.if_key = "ETH_LAN";
+        esp_netif_common_config.route_prio = 10;
     } else {
         esp_netif_common_config.flags |= ESP_NETIF_DHCP_CLIENT;
     }
-
-    // For dual ethernet support, we need to differentiate the interfaces
-    #if defined(CONFIG_BRIDGE_DUAL_ETHERNET_SUPPORT)
-    if (data_forwarding && first_eth_lan_created) {
-        esp_netif_common_config.if_key = "ETH_LAN2";
-    } else if (data_forwarding) {
-        first_eth_lan_created = true;
-    }
-    
-    if (!data_forwarding && first_eth_wan_created) {
-        esp_netif_common_config.if_key = "ETH_WAN2";
-    } else if (!data_forwarding) {
-        first_eth_wan_created = true;
-    }
-    #endif
 
     const esp_netif_driver_ifconfig_t eth_driver_ifconfig = {
         .driver_free_rx_buffer = eth_driver_free_rx_buffer,
         .transmit = eth_io_transmit,
         .transmit_wrap = eth_io_transmit_wrap,
-        .handle = data_forwarding ? "ETH_LAN" : "ETH_WAN" // this IO object is a singleton, its handle uses as a name
+        .handle = "ETH" // this IO object is a singleton, its handle uses as a name
     };
 
     esp_bridge_eth_event_handler_register();
@@ -477,153 +459,3 @@ esp_netif_t* esp_bridge_create_eth_netif(esp_netif_ip_info_t* ip_info, uint8_t m
 
     return netif;
 }
-
-#if defined(CONFIG_BRIDGE_DUAL_ETHERNET_SUPPORT)
-/**
-* @brief Create dual eth netif for bridge.
-*
-* @param[in] ip_info0: custom ip address for first interface, if set NULL, it will automatically be assigned.
-* @param[in] mac0: custom mac address for first interface, if set NULL, it will automatically be assigned.
-* @param[in] data_forwarding0: whether to use first interface as data forwarding netif
-* @param[in] enable_dhcps0: whether to enable DHCP server for first interface
-* @param[in] ip_info1: custom ip address for second interface, if set NULL, it will automatically be assigned.
-* @param[in] mac1: custom mac address for second interface, if set NULL, it will automatically be assigned.
-* @param[in] data_forwarding1: whether to use second interface as data forwarding netif
-* @param[in] enable_dhcps1: whether to enable DHCP server for second interface
-*
-* @return
-*      - instance: the first netif instance created successfully
-*      - NULL: failed because some error occurred
-*/
-esp_netif_t *esp_bridge_create_dual_eth_netif(esp_netif_ip_info_t *ip_info0, uint8_t mac0[6], bool data_forwarding0, bool enable_dhcps0,
-                                              esp_netif_ip_info_t *ip_info1, uint8_t mac1[6], bool data_forwarding1, bool enable_dhcps1)
-{
-    // Create first ethernet interface
-    esp_netif_t *netif0 = esp_bridge_create_eth_netif(ip_info0, mac0, data_forwarding0, enable_dhcps0);
-    
-    // Small delay to ensure proper initialization
-    vTaskDelay(pdMS_TO_TICKS(100));
-    
-    // Create second ethernet interface with different parameters to avoid conflicts
-    esp_netif_t *netif1 = esp_bridge_create_eth_netif(ip_info1, mac1, data_forwarding1, enable_dhcps1);
-    
-    if (netif0 && netif1) {
-        ESP_LOGI(TAG, "Dual Ethernet interfaces created successfully");
-        return netif0;
-    } else {
-        ESP_LOGE(TAG, "Failed to create dual Ethernet interfaces");
-        // Clean up if one of them failed
-        if (netif0) {
-            esp_netif_destroy(netif0);
-        }
-        if (netif1) {
-            esp_netif_destroy(netif1);
-        }
-        return NULL;
-    }
-}
-
-esp_err_t esp_bridge_dual_eth_spi_init(esp_netif_t* eth_netif_spi0, esp_netif_t* eth_netif_spi1)
-{
-    esp_err_t ret = ESP_FAIL;
-    static bool eth_is_start = false;
-    static esp_eth_handle_t eth_handle_spi0 = NULL;
-    static esp_eth_handle_t eth_handle_spi1 = NULL;
-    
-    if (!eth_is_start) {
-        // Install GPIO ISR handler to be able to service SPI Eth modules interrupts
-        gpio_install_isr_service(0);
-
-        // Init SPI bus
-        spi_bus_config_t buscfg = {
-            .miso_io_num = CONFIG_BRIDGE_ETH_SPI_MISO_GPIO,
-            .mosi_io_num = CONFIG_BRIDGE_ETH_SPI_MOSI_GPIO,
-            .sclk_io_num = CONFIG_BRIDGE_ETH_SPI_SCLK_GPIO,
-            .quadwp_io_num = -1,
-            .quadhd_io_num = -1,
-        };
-        ESP_ERROR_CHECK(spi_bus_initialize(CONFIG_BRIDGE_ETH_SPI_HOST, &buscfg, SPI_DMA_CH_AUTO));
-    }
-    
-    // Configure first SPI Ethernet module
-    if (!eth_handle_spi0) {
-        spi_device_interface_config_t devcfg0 = {
-            .mode = 0,
-            .clock_speed_hz = CONFIG_BRIDGE_ETH_SPI_CLOCK_MHZ * 1000 * 1000,
-            .queue_size = 20,
-            .spics_io_num = CONFIG_BRIDGE_ETH_SPI_CS0_GPIO
-        };
-
-        uint8_t spi_eth_module_max = sizeof(esp_bridge_spi_eth_module)/sizeof(esp_bridge_spi_eth_module[0]);
-
-        for (uint8_t i = 0; i < spi_eth_module_max; i++) {
-            if (esp_bridge_spi_eth_module[i](&devcfg0, eth_netif_spi0, &eth_handle_spi0) == ESP_OK) {
-                break;
-            }
-        }
-    }
-    
-    // Configure second SPI Ethernet module
-    if (!eth_handle_spi1) {
-        spi_device_interface_config_t devcfg1 = {
-            .mode = 0,
-            .clock_speed_hz = CONFIG_BRIDGE_ETH_SPI_CLOCK_MHZ * 1000 * 1000,
-            .queue_size = 20,
-            .spics_io_num = CONFIG_BRIDGE_ETH_SPI_CS1_GPIO
-        };
-
-        uint8_t spi_eth_module_max = sizeof(esp_bridge_spi_eth_module)/sizeof(esp_bridge_spi_eth_module[0]);
-
-        for (uint8_t i = 0; i < spi_eth_module_max; i++) {
-            if (esp_bridge_spi_eth_module[i](&devcfg1, eth_netif_spi1, &eth_handle_spi1) == ESP_OK) {
-                break;
-            }
-        }
-    }
-
-    if (eth_handle_spi0) {
-        /* The SPI Ethernet module might not have a burned factory MAC address, we can set it manually.
-        02:00:00 is a Locally Administered OUI range so should not be used except when testing on a LAN under your control.
-        */
-        ESP_ERROR_CHECK(esp_eth_ioctl(eth_handle_spi0, ETH_CMD_S_MAC_ADDR, (uint8_t[]) {
-            0x02, 0x00, 0x00, 0x12, 0x34, 0x57
-        }));
-
-        // attach Ethernet driver to TCP/IP stack
-#if defined(CONFIG_BRIDGE_NETIF_ETHERNET_AUTO_WAN_OR_LAN)
-        ESP_ERROR_CHECK(esp_netif_attach(eth_netif_spi0, esp_bridge_eth_new_netif_glue(eth_handle_spi0)));
-#else
-        ESP_ERROR_CHECK(esp_netif_attach(eth_netif_spi0, esp_eth_new_netif_glue(eth_handle_spi0)));
-#endif
-    }
-    
-    if (eth_handle_spi1) {
-        /* The SPI Ethernet module might not have a burned factory MAC address, we can set it manually.
-        02:00:00 is a Locally Administered OUI range so should not be used except when testing on a LAN under your control.
-        */
-        ESP_ERROR_CHECK(esp_eth_ioctl(eth_handle_spi1, ETH_CMD_S_MAC_ADDR, (uint8_t[]) {
-            0x02, 0x00, 0x00, 0x12, 0x34, 0x58
-        }));
-
-        // attach Ethernet driver to TCP/IP stack
-#if defined(CONFIG_BRIDGE_NETIF_ETHERNET_AUTO_WAN_OR_LAN)
-        ESP_ERROR_CHECK(esp_netif_attach(eth_netif_spi1, esp_bridge_eth_new_netif_glue(eth_handle_spi1)));
-#else
-        ESP_ERROR_CHECK(esp_netif_attach(eth_netif_spi1, esp_eth_new_netif_glue(eth_handle_spi1)));
-#endif
-    }
-
-    if (!eth_is_start) {
-        /* start Ethernet driver state machine */
-        if (eth_handle_spi0) {
-            ret = esp_eth_start(eth_handle_spi0);
-        }
-        if (eth_handle_spi1) {
-            ret = esp_eth_start(eth_handle_spi1);
-        }
-        eth_is_start = true;
-    }
-
-    return ret;
-}
-#endif // CONFIG_BRIDGE_DUAL_ETHERNET_SUPPORT

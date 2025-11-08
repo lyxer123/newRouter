@@ -35189,16 +35189,6 @@
                             {
                                 "children": [],
                                 "depends_on": "BRIDGE_ETHERNET_NETIF_ENABLE",
-                                "help": "Enable support for dual Ethernet interfaces. This allows connecting two Ethernet modules simultaneously.\nRequires proper hardware configuration with two SPI Ethernet modules.",
-                                "id": "BRIDGE_DUAL_ETHERNET_SUPPORT",
-                                "name": "BRIDGE_DUAL_ETHERNET_SUPPORT",
-                                "range": null,
-                                "title": "Enable Dual Ethernet interfaces support",
-                                "type": "bool"
-                            },
-                            {
-                                "children": [],
-                                "depends_on": "BRIDGE_ETHERNET_NETIF_ENABLE",
                                 "help": "If using SPI Ethernet, ensure that the corresponding SPI Ethernet module configuration is enabled, e.g., CONFIG_ETH_SPI_ETHERNET_DM9051.\nPath: Component config \u2192 Ethernet \u2192 Support SPI to Ethernet Module \u2192 DM9051",
                                 "id": "BRIDGE_NETIF_ETHERNET_AUTO_WAN_OR_LAN",
                                 "name": "BRIDGE_NETIF_ETHERNET_AUTO_WAN_OR_LAN",
@@ -35703,58 +35693,6 @@
                                     31
                                 ],
                                 "title": "PHY Address of SPI Ethernet Module #1",
-                                "type": "int"
-                            },
-                            {
-                                "children": [],
-                                "depends_on": "BRIDGE_DUAL_ETHERNET_SUPPORT && BRIDGE_USE_SPI_ETHERNET && BRIDGE_ETHERNET_NETIF_ENABLE",
-                                "help": "Set the GPIO number used by SPI CS1, i.e. Chip Select associated with the second SPI Eth module.",
-                                "id": "BRIDGE_ETH_SPI_CS1_GPIO",
-                                "name": "BRIDGE_ETH_SPI_CS1_GPIO",
-                                "range": [
-                                    0,
-                                    48
-                                ],
-                                "title": "SPI CS1 GPIO number for SPI Ethernet module #2",
-                                "type": "int"
-                            },
-                            {
-                                "children": [],
-                                "depends_on": "BRIDGE_DUAL_ETHERNET_SUPPORT && BRIDGE_USE_SPI_ETHERNET && BRIDGE_ETHERNET_NETIF_ENABLE",
-                                "help": "Set the GPIO number used by the second SPI Ethernet module interrupt line.",
-                                "id": "BRIDGE_ETH_SPI_INT1_GPIO",
-                                "name": "BRIDGE_ETH_SPI_INT1_GPIO",
-                                "range": [
-                                    0,
-                                    48
-                                ],
-                                "title": "Interrupt GPIO number SPI Ethernet module #2",
-                                "type": "int"
-                            },
-                            {
-                                "children": [],
-                                "depends_on": "BRIDGE_DUAL_ETHERNET_SUPPORT && BRIDGE_USE_SPI_ETHERNET && BRIDGE_ETHERNET_NETIF_ENABLE",
-                                "help": "Set the GPIO number used to reset PHY chip on the second SPI Ethernet module.\nSet to -1 to disable PHY chip hardware reset.",
-                                "id": "BRIDGE_ETH_SPI_PHY_RST1_GPIO",
-                                "name": "BRIDGE_ETH_SPI_PHY_RST1_GPIO",
-                                "range": [
-                                    -1,
-                                    48
-                                ],
-                                "title": "PHY Reset GPIO number of SPI Ethernet Module #2",
-                                "type": "int"
-                            },
-                            {
-                                "children": [],
-                                "depends_on": "BRIDGE_DUAL_ETHERNET_SUPPORT && BRIDGE_USE_SPI_ETHERNET && BRIDGE_ETHERNET_NETIF_ENABLE",
-                                "help": "Set the second SPI Ethernet module PHY address according your board schematic.",
-                                "id": "BRIDGE_ETH_SPI_PHY_ADDR1",
-                                "name": "BRIDGE_ETH_SPI_PHY_ADDR1",
-                                "range": [
-                                    0,
-                                    31
-                                ],
-                                "title": "PHY Address of SPI Ethernet Module #2",
                                 "type": "int"
                             }
                         ],

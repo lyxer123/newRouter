@@ -1,7 +1,7 @@
 {
     "version":            "1.2",
     "project_name":       "newRouter",
-    "project_version":    "V0.0.2-dirty",
+    "project_version":    "V0.0.2-2-gcac1f38-dirty",
     "project_path":       "E:/github/newRouter",
     "idf_path":           "E:/github/v5.5.1/esp-idf",
     "build_dir":          "E:/github/newRouter/build",
@@ -1120,7 +1120,7 @@
             "managed_reqs": [],
             "managed_priv_reqs": [ "espressif__cmake_utilities", "espressif__esp_modem_usb_dte", "espressif__esp_tinyusb" ],
             "file": "E:/github/newRouter/build/esp-idf/espressif__iot_bridge/libespressif__iot_bridge.a",
-            "sources": [ "E:/github/newRouter/managed_components/espressif__iot_bridge/src/bridge_common.c", "E:/github/newRouter/managed_components/espressif__iot_bridge/src/customer_hook.c", "E:/github/newRouter/managed_components/espressif__iot_bridge/src/bridge_wifi.c", "E:/github/newRouter/managed_components/espressif__iot_bridge/src/bridge_eth.c", "E:/github/newRouter/managed_components/espressif__iot_bridge/src/bridge_modem.c" ],
+            "sources": [ "E:/github/newRouter/managed_components/espressif__iot_bridge/src/bridge_common.c", "E:/github/newRouter/managed_components/espressif__iot_bridge/src/customer_hook.c", "E:/github/newRouter/managed_components/espressif__iot_bridge/src/bridge_wifi.c", "E:/github/newRouter/managed_components/espressif__iot_bridge/src/bridge_eth.c", "E:/github/newRouter/managed_components/espressif__iot_bridge/src/esp_eth_netif_glue_wrap.c", "E:/github/newRouter/managed_components/espressif__iot_bridge/src/bridge_modem.c" ],
             "include_dirs": [ "include" ]
         },
         "espressif__tinyusb": {
