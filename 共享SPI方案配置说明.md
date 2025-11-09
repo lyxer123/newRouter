@@ -16,7 +16,7 @@
 **W5500卡1（Card 1）**：
 - **CS0** = GPIO10
 - **INT** = GPIO12
-- **RESET** = GPIO45
+- **RESET** = GPIO38
 
 **W5500卡2（Card 2）**：
 - **CS0** = GPIO11
@@ -34,7 +34,7 @@ GPIO46 (MISO) ─────┼────── MISO                 MISO
                    │
 GPIO10 (CS0)  ─────┴────── CS                   (不连接)
 GPIO12 (INT)  ──────────── INT                  (不连接)
-GPIO45 (RST)  ──────────── RESET                (不连接)
+GPIO38 (RST)  ──────────── RESET                (不连接)
 
 GPIO11 (CS1)  ────────────────────────────────── CS
 GPIO13 (INT1) ────────────────────────────────── INT
@@ -61,7 +61,7 @@ Component config → Bridge Configuration → ETH Configuration
 **控制信号配置**：
 - `SPI CS0 GPIO number for SPI Ethernet module #1`：10
 - `Interrupt GPIO number SPI Ethernet module #1`：12
-- `PHY Reset GPIO number of SPI Ethernet Module #1`：45
+- `PHY Reset GPIO number of SPI Ethernet Module #1`：38
 - `PHY Address of SPI Ethernet Module #1`：0（默认）
 
 ### 3.3 卡2配置
@@ -84,7 +84,7 @@ idf.py menuconfig
 
 验证以下配置：
 - ✅ SPI总线配置：SCK=GPIO9, MOSI=GPIO3, MISO=GPIO46
-- ✅ 卡1配置：CS=GPIO10, INT=GPIO12, RST=GPIO45
+- ✅ 卡1配置：CS=GPIO10, INT=GPIO12, RST=GPIO38
 - ✅ 卡2配置：CS=GPIO11, INT=GPIO13, RST=GPIO34
 
 ### 4.2 检查sdkconfig文件
@@ -101,7 +101,7 @@ CONFIG_BRIDGE_ETH_SPI_MOSI_GPIO=3
 CONFIG_BRIDGE_ETH_SPI_MISO_GPIO=46
 CONFIG_BRIDGE_ETH_SPI_CS0_GPIO=10
 CONFIG_BRIDGE_ETH_SPI_INT0_GPIO=12
-CONFIG_BRIDGE_ETH_SPI_PHY_RST0_GPIO=45
+CONFIG_BRIDGE_ETH_SPI_PHY_RST0_GPIO=38
 CONFIG_BRIDGE_ETH_SPI_PHY_ADDR0=0
 CONFIG_BRIDGE_ETH_SPI_CS1_GPIO=11
 CONFIG_BRIDGE_ETH_SPI_INT1_GPIO=13

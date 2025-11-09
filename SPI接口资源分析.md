@@ -149,7 +149,7 @@ GPIO11  ------>  MOSI
 GPIO13  ------>  MISO
 GPIO10  ------>  CS1
 GPIO12  ------>  INT1
-GPIO45  ------>  RST1
+GPIO38  ------>  RST1
 ```
 
 **SPI3连接（W5500卡2）**：

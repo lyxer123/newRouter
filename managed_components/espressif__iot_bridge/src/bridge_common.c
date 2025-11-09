@@ -175,6 +175,56 @@ esp_err_t esp_bridge_netif_request_ip(esp_netif_ip_info_t *ip_info)
     return ESP_FAIL;
 }
 
+// 为双网卡创建专门的IP地址分配函数
+esp_err_t esp_bridge_netif_request_ip_dual(esp_netif_ip_info_t *ip_info, int card_index)
+{
+    // 为不同的网卡分配不同的IP网段
+    if (card_index == 0) {
+        // 网卡1使用192.168.5.x网段
+        ip_info->ip.addr = ESP_IP4TOADDR(192, 168, 5, 1);
+        ip_info->gw.addr = ESP_IP4TOADDR(192, 168, 5, 1);
+        ip_info->netmask.addr = ESP_IP4TOADDR(255, 255, 255, 0);
+        ESP_LOGI(TAG, "Card%d IP Address:" IPSTR, card_index, IP2STR(&ip_info->ip));
+        ESP_LOGI(TAG, "Card%d GW Address:" IPSTR, card_index, IP2STR(&ip_info->gw));
+        ESP_LOGI(TAG, "Card%d NM Address:" IPSTR, card_index, IP2STR(&ip_info->netmask));
+        return ESP_OK;
+    } else if (card_index == 1) {
+        // 网卡2使用192.168.4.x网段
+        ip_info->ip.addr = ESP_IP4TOADDR(192, 168, 4, 1);
+        ip_info->gw.addr = ESP_IP4TOADDR(192, 168, 4, 1);
+        ip_info->netmask.addr = ESP_IP4TOADDR(255, 255, 255, 0);
+        ESP_LOGI(TAG, "Card%d IP Address:" IPSTR, card_index, IP2STR(&ip_info->ip));
+        ESP_LOGI(TAG, "Card%d GW Address:" IPSTR, card_index, IP2STR(&ip_info->gw));
+        ESP_LOGI(TAG, "Card%d NM Address:" IPSTR, card_index, IP2STR(&ip_info->netmask));
+        return ESP_OK;
+    }
+
+    // 如果不是网卡1或网卡2，使用原来的逻辑
+    bool ip_segment_is_used = true;
+    for (uint8_t bridge_ip = 4; bridge_ip < 255; bridge_ip++) {
+        esp_bridge_network_segment_custom_check_t *list = custom_check_list;
+        ip_segment_is_used = esp_bridge_netif_network_segment_is_used(ESP_IP4TOADDR(192, 168, bridge_ip, 1));
+
+        while (!ip_segment_is_used && list) {
+            ip_segment_is_used = list->custom_check_cb(ESP_IP4TOADDR(192, 168, bridge_ip, 1));
+            list = list->next;
+        }
+
+        if (!ip_segment_is_used) {
+            ip_info->ip.addr = ESP_IP4TOADDR(192, 168, bridge_ip, 1);
+            ip_info->gw.addr = ESP_IP4TOADDR(192, 168, bridge_ip, 1);
+            ip_info->netmask.addr = ESP_IP4TOADDR(255, 255, 255, 0);
+            ESP_LOGI(TAG, "IP Address:" IPSTR, IP2STR(&ip_info->ip));
+            ESP_LOGI(TAG, "GW Address:" IPSTR, IP2STR(&ip_info->gw));
+            ESP_LOGI(TAG, "NM Address:" IPSTR, IP2STR(&ip_info->netmask));
+
+            return ESP_OK;
+        }
+    }
+
+    return ESP_FAIL;
+}
+
 static bool esp_bridge_netif_mac_is_used(uint8_t mac[6])
 {
     bridge_netif_t *p = bridge_link;
@@ -287,6 +337,49 @@ esp_netif_t* esp_bridge_create_netif(esp_netif_config_t* config, esp_netif_ip_in
     } else {
         if (enable_dhcps) {
             esp_bridge_netif_request_ip(&allocate_ip_info);
+            esp_netif_set_ip_info(netif, &allocate_ip_info);
+        }
+    }
+
+    if (custom_mac) { // Custom MAC
+        ESP_ERROR_CHECK(esp_netif_set_mac(netif, custom_mac));
+    } else {
+        if (enable_dhcps) {
+            esp_bridge_netif_request_mac(allocate_mac);
+            esp_netif_set_mac(netif, allocate_mac);
+        }
+    }
+    // Start the netif in a manual way, no need for events
+    esp_netif_action_start(netif, NULL, 0, NULL);
+    esp_netif_up(netif);
+
+    if (enable_dhcps) {
+        esp_netif_dns_info_t dns;
+        dns.ip.u_addr.ip4.addr = ipaddr_addr(CONFIG_BRIDGE_STATIC_DNS_SERVER_MAIN);
+        dns.ip.type = IPADDR_TYPE_V4;
+        dhcps_offer_t dhcps_dns_value = OFFER_DNS;
+        ESP_ERROR_CHECK(esp_netif_dhcps_option(netif, ESP_NETIF_OP_SET, ESP_NETIF_DOMAIN_NAME_SERVER, &dhcps_dns_value, sizeof(dhcps_dns_value)));
+        ESP_ERROR_CHECK(esp_netif_set_dns_info(netif, ESP_NETIF_DNS_MAIN, &dns));
+        ESP_ERROR_CHECK(esp_netif_dhcps_start(netif));
+    }
+
+    return netif;
+}
+
+// 为双网卡创建专门的网络接口创建函数
+esp_netif_t* esp_bridge_create_netif_dual(esp_netif_config_t* config, esp_netif_ip_info_t* custom_ip_info, uint8_t custom_mac[6], bool enable_dhcps, int card_index)
+{
+    esp_netif_ip_info_t allocate_ip_info = { 0 };
+    uint8_t allocate_mac[6] = { 0 };
+    esp_netif_t* netif = esp_netif_new(config);
+    assert(netif);
+
+    esp_netif_dhcps_stop(netif);
+    if (custom_ip_info) { // Custom IP
+        esp_netif_set_ip_info(netif, custom_ip_info);
+    } else {
+        if (enable_dhcps) {
+            esp_bridge_netif_request_ip_dual(&allocate_ip_info, card_index);
             esp_netif_set_ip_info(netif, &allocate_ip_info);
         }
     }
@@ -639,11 +732,25 @@ void esp_bridge_create_all_netif(void)
 #endif
 
 #if defined(CONFIG_BRIDGE_DATA_FORWARDING_NETIF_ETHERNET) || defined(CONFIG_BRIDGE_NETIF_ETHERNET_AUTO_WAN_OR_LAN)
-    esp_bridge_create_eth_netif(NULL, NULL, true, true);
+    // 创建W5500卡2（固定LAN模式）
+    // 使用新的双网卡支持函数
+    extern esp_netif_t* esp_bridge_create_eth_netif_dual(esp_netif_ip_info_t* ip_info, 
+                                          uint8_t mac[6], 
+                                          bool data_forwarding, 
+                                          bool enable_dhcps,
+                                          int card_index);
+    esp_bridge_create_eth_netif_dual(NULL, NULL, true, true, 1);  // card_index = 1
 #endif
 
 #if defined(CONFIG_BRIDGE_EXTERNAL_NETIF_ETHERNET) || defined(CONFIG_BRIDGE_NETIF_ETHERNET_AUTO_WAN_OR_LAN)
-    esp_bridge_create_eth_netif(NULL, NULL, false, false);
+    // 创建W5500卡1（支持自动WAN/LAN切换）
+    // 使用新的双网卡支持函数
+    extern esp_netif_t* esp_bridge_create_eth_netif_dual(esp_netif_ip_info_t* ip_info, 
+                                          uint8_t mac[6], 
+                                          bool data_forwarding, 
+                                          bool enable_dhcps,
+                                          int card_index);
+    esp_bridge_create_eth_netif_dual(NULL, NULL, false, false, 0);  // card_index = 0
 #endif
 
 #if ESP_IDF_VERSION >= ESP_IDF_VERSION_VAL(4, 4, 0)
