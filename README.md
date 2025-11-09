@@ -58,7 +58,7 @@ A7680C是一款支持4G Cat.1的通信模块，通过USB接口连接到ESP32-S3�
 ```
 Component config → Bridge Configuration → Modem Configuration
 [*] Use 4G modem interface to connect to the external network
-()  Modem reset control GPIO, set 0 if not use (NEW) = 13
+()  Modem reset control GPIO, set 0 if not use (NEW) = 39
 (esp32) Set MODEM APN (NEW) = internet
 (espressif) Set username for authentication (NEW) = espressif
 (esp32) Set password for authentication (NEW) = esp32
@@ -67,9 +67,9 @@ Component config → Bridge Configuration → Modem Configuration
 
 Choose the interface of the modem (UART or USB) → USB
 USB Configuration
-(0x2C7C) USB Vendor ID (NEW) = 0x2C7C
-(0x6002) USB Product ID (NEW) = 0x6002
-(3) USB interface number (NEW) = 3
+(0x1E0E) USB Vendor ID (NEW) = 0x1E0E
+(0x9001) USB Product ID (NEW) = 0x9001
+(5) USB interface number (NEW) = 5
 ```
 
 #### 双W5500以太网模块配置
