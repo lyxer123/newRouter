@@ -1,9 +1,14 @@
-# 4G路由器
+# 双W5500网卡4G路由器
 
 ## 概述
 
-本项目实现的是4g模块和W5500模块的组合，实现4G和WIFI+有线网络的共存。
-具体为4g->wifi+有线网络共存，或者4g+有线网络->wifi。其中有线网络要么做对下接内网，要么接路由器对上
+本项目实现的是4G模块和双W5500以太网模块的组合，支持4G、WiFi和双有线网络的共存。
+具体实现4G->WiFi+双有线网络共存，或者4G+双有线网络->WiFi。双有线网络可以分别作为上行（WAN）和下行（LAN）接口使用。
+
+本项目支持双W5500网卡通过共享SPI总线连接到ESP32-S3，实现商用路由器功能，其中：
+- WiFi热点使用独立的IP子网192.168.5.x，网关为192.168.5.1
+- 双W5500网卡共享另一个IP子网192.168.4.x，网关为192.168.4.1
+- 4G模块作为备用WAN接口
 
 <img src="https://raw.githubusercontent.com/espressif/esp-iot-bridge/master/components/iot_bridge/docs/_static/4g_nic_en.png" style="zoom:80%;" />
 
@@ -18,13 +23,27 @@
 **必需**
 - 4G模块，EC600N模块
 - ESP32S3模块或ESP32S3系列开发板
-- W5500模块，通过SPI与ESP32S3连接
+- 双W5500模块，通过共享SPI总线与ESP32S3连接
 - Micro-USB线用于供电和编程
 
 **可选**
 - 一根以太网线
 - 一根USB通信线
-- 一些杜邦线用于连接MCU的SPI或SDIO接口
+- 一些杜邦线用于连接MCU的SPI接口
+
+**双W5500硬件连接**：
+- **共享SPI总线**：
+  - SCK = GPIO9
+  - MOSI = GPIO3
+  - MISO = GPIO46
+- **卡1（W5500 Card 1）**：
+  - CS0 = GPIO10
+  - INT = GPIO12
+  - RESET = GPIO38
+- **卡2（W5500 Card 2）**：
+  - CS1 = GPIO11
+  - INT = GPIO13
+  - RESET = GPIO34
 
 请按照为此示例提供的详细说明进行操作。
 
@@ -53,48 +72,63 @@ USB Configuration
 (3) USB interface number (NEW) = 3
 ```
 
-#### W5500以太网模块配置
+#### 双W5500以太网模块配置
 
-W5500是以太网控制器，通过SPI接口连接到ESP32。
+双W5500是以太网控制器，通过共享SPI总线连接到ESP32-S3。
 
 **menuconfig中的配置参数:**
 ```
 Component config → Bridge Configuration → ETH Configuration
-[*] Enable Ethernet interface (NEW)
-[*] SPI Ethernet (NEW)
+[*] Enable Ethernet interface
+[*] SPI Ethernet
 
-Bridge ETH SPI Host Number (1) → 1
+共享SPI总线配置：
+Bridge ETH SPI Host Number (2) → 2
 Bridge ETH SPI SCLK GPIO number (9) → 9
 Bridge ETH SPI MOSI GPIO number (3) → 3
 Bridge ETH SPI MISO GPIO number (46) → 46
-Bridge ETH SPI clock speed (MHz) (23) → 23   (最大值60MHz)
+Bridge ETH SPI clock speed (MHz) (16) → 16
+
+卡1配置：
 Bridge ETH SPI CS0 GPIO number for SPI Ethernet module #1 (10) → 10
-Bridge ETH SPI Interrupt GPIO number SPI Ethernet module #1 (11) → 11
-Bridge ETH SPI PHY Reset GPIO number of SPI Ethernet Module #1 (12) → 12
-Bridge ETH SPI PHY Address of SPI Ethernet Module #1 (1) → 1
+Bridge ETH SPI Interrupt GPIO number SPI Ethernet module #1 (12) → 12
+Bridge ETH SPI PHY Reset GPIO number of SPI Ethernet Module #1 (38) → 38
+Bridge ETH SPI PHY Address of SPI Ethernet Module #1 (0) → 0
+
+卡2配置：
+Bridge ETH SPI CS1 GPIO number for SPI Ethernet module #2 (11) → 11
+Bridge ETH SPI Interrupt GPIO number SPI Ethernet module #2 (13) → 13
+Bridge ETH SPI PHY Reset GPIO number of SPI Ethernet Module #2 (34) → 34
+Bridge ETH SPI PHY Address of SPI Ethernet Module #2 (1) → 1
+
+网络接口配置：
+[*] Ethernet acts as WAN or LAN automatically
+[ ] Use Wi-Fi station interface to connect to the external network
+[*] Use ethernet interface to provide network data forwarding for other devices
 ```
 
-#### 修改bridge_modem.c文件（espressif__iot_bridge 0.11.9 版本）
+#### 网络接口配置
 
-为了支持EC600N模块，需要修改bridge_modem.c文件中的设备类型：
+本项目支持多种网络接口配置，实现商用路由器功能：
 
-文件路径: `managed_components/espressif__iot_bridge/src/bridge_modem.c`
+**双W5500网卡配置**：
+- **卡1**：可WAN可LAN（自动切换）
+  - 连接上级路由器时自动作为WAN
+  - 连接下位设备时自动作为LAN
+  - 启用"Ethernet acts as WAN or LAN automatically"功能
+- **卡2**：固定为LAN（连接下位计算机）
+  - 始终作为数据转发接口
+  - 始终启用DHCP服务器
+  - 不参与自动切换
 
-修改内容:
-1. 将设备类型从ESP_MODEM_DCE_BG96改为ESP_MODEM_DCE_GENERIC
-2. 更新日志信息以反映使用的是EC600N模块
+**IP地址分配策略**：
+- **WiFi热点**：使用192.168.5.x子网，网关为192.168.5.1
+- **双W5500网卡**：共享192.168.4.x子网，网关为192.168.4.1
+- **4G模块**：作为备用WAN接口
 
-修改前:
-```c
-ESP_LOGI(TAG, "Initializing esp_modem for the BG96 module...");
-esp_modem_dce_t *dce = esp_modem_new_dev_usb(ESP_MODEM_DCE_BG96, &dte_usb_config, &dce_config, esp_netif);
-```
-
-修改后:
-```c
-ESP_LOGI(TAG, "Initializing esp_modem for the EC600N module...");
-esp_modem_dce_t *dce = esp_modem_new_dev_usb(ESP_MODEM_DCE_GENERIC, &dte_usb_config, &dce_config, esp_netif);
-```
+**DHCP地址池**：
+- WiFi热点：192.168.5.100-192.168.5.200
+- 双W5500网卡：192.168.4.100-192.168.4.200
 
 #### 选择用于为其他设备提供网络数据转发的接口
 
@@ -107,20 +141,22 @@ esp_modem_dce_t *dce = esp_modem_new_dev_usb(ESP_MODEM_DCE_GENERIC, &dte_usb_con
 
 如下是串口信息
 ```c
-[0;31mE (999) ksz8851snl-mac: emac_ksz8851_init(260): verify chip id failed
-[0;32mI (1006) gpio: GPIO[11]| InputEn: 0| OutputEn: 0| OpenDrain: 0| Pullup: 1| Pulldown: 0| Intr:0 
-[0;31mE (1016) esp_eth: esp_eth_driver_install(228): init mac failed
 [0;32mI (1023) w5500.mac: version=0
 [0;32mI (1036) esp_eth.netif.netif_glue: 02:00:00:12:34:56
 [0;32mI (1036) esp_eth.netif.netif_glue: ethernet attached to netif
 [0;32mI (1048) bridge_eth: Ethernet Started
-[0;32mI (1049) bridge_eth: [ETH_LAN     ]
-Add netif eth with b45c94b(commit id)
-
-[0;32mI (1050) bridge_common: netif list add success
-[0;32mI (1055) bridge_eth: ETH IP Address:192.168.4.1
-[0;33mW (1060) bridge_modem: Force reset 4g board
-[0;32mI (1065) gpio: GPIO[13]| InputEn: 0| OutputEn: 1| OpenDrain: 0| Pullup: 0| Pulldown: 0| Intr:0 
+[0;32mI (1049) bridge_eth: [ETH_LAN     ] Card0
+[0;32mI (1050) bridge_eth: ETH Card0 IP Address:192.168.4.1
+[0;32mI (1055) bridge_common: netif list add success
+[0;32mI (1060) w5500.mac: version=0
+[0;32mI (1065) esp_eth.netif.netif_glue: 02:00:00:12:34:57
+[0;32mI (1070) esp_eth.netif.netif_glue: ethernet attached to netif
+[0;32mI (1075) bridge_eth: Ethernet Started
+[0;32mI (1080) bridge_eth: [ETH_LAN2    ] Card1
+[0;32mI (1085) bridge_eth: ETH Card1 IP Address:192.168.4.1
+[0;32mI (1090) bridge_common: netif list add success
+[0;33mW (1100) bridge_modem: Force reset 4g board
+[0;32mI (1105) gpio: GPIO[13]| InputEn: 0| OutputEn: 1| OpenDrain: 0| Pullup: 0| Pulldown: 0| Intr:0 
 [0;32mI (3049) bridge_eth: Ethernet Link Up
 [0;32mI (3049) bridge_eth: Ethernet HW Addr 02:00:00:12:34:56
 [0;32mI (6574) bridge_modem: Initializing esp_modem for the EC600N module...
@@ -138,7 +174,33 @@ Add netif eth with b45c94b(commit id)
 [0;32mI (8058) esp-netif_lwip-ppp: Connected
 [0;32mI (8062) bridge_common: [WIFI_AP_DEF ]Name Server1: 61.128.128.68
 [0;32mI (8069) bridge_common: [ETH_LAN     ]Name Server1: 61.128.128.68
-[0;32mI (8076) bridge_modem: GOT ip event!!!
-[0;32mI (8080) bridge_modem: PPP state changed event 0
-[0;32mI (8087) main_task: Returned from app_main()
+[0;32mI (8076) bridge_common: [ETH_LAN2    ]Name Server1: 61.128.128.68
+[0;32mI (8080) bridge_modem: GOT ip event!!!
+[0;32mI (8085) bridge_modem: PPP state changed event 0
+[0;32mI (8090) main_task: Returned from app_main()
 ```
+
+#### 双W5500网卡实现详情
+
+本项目实现了双W5500网卡支持，采用共享SPI总线方案：
+
+1. **硬件连接**：
+   - 两个W5500模块共享SPI总线（SPI2）
+   - 每个模块有独立的CS、INT、RST信号
+   - GPIO资源需求：10个（共享总线3个 + 独立信号7个）
+
+2. **软件实现**：
+   - 卡1支持自动WAN/LAN切换
+   - 卡2固定为LAN模式
+   - WiFi热点使用独立子网192.168.5.x
+   - 双W5500网卡共享子网192.168.4.x
+
+3. **IP地址分配**：
+   - WiFi热点：192.168.5.1（网关）
+   - 卡1和卡2：192.168.4.1（网关）
+   - WiFi热点DHCP地址池：192.168.5.100-200
+   - 双W5500网卡DHCP地址池：192.168.4.100-200
+
+4. **路由优先级**：
+   - 卡1作为WAN时：卡1 > 4G > 卡2
+   - 卡1作为LAN时：4G > 卡1 > 卡2
