@@ -1,6 +1,6 @@
 /* Automatically generated file; DO NOT EDIT */
 /* Espressif IoT Development Framework Linker Script */
-/* Generated from: E:\github\newRouter\build\esp-idf\esp_system\ld\sections.ld.in */
+/* Generated from: C:\Users\yongx\Desktop\newRouter-0.0.3\build\esp-idf\esp_system\ld\sections.ld.in */
 
 /*
 

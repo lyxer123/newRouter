@@ -1,29 +1,11 @@
-# ESP-IoT-Bridge Dual W5500 Implementation
+# 4G路由器
 
-## 项目概述
+## 概述
 
-本项目基于ESP-IDF v5.0.6,V5.1.6,V5.2.5,V5.4.1,V5.5.1开发，实现双W5500网卡功能，同时保留原有的4G转WiFi功能。项目支持多种网络接入方式的智能切换，可作为商用路由器使用。
+本项目实现的是4g模块和W5500模块的组合，实现4G和WIFI+有线网络的共存。
+具体为4g->wifi+有线网络共存，或者4g+有线网络->wifi。其中有线网络要么做对下接内网，要么接路由器对上
 
-### 网络接口配置
-
-1. **WAN接口**（连接上级网络）：
-   - W5500卡1（自动WAN/LAN切换）
-   - WiFi Station（连接上级WiFi路由器）
-   - 4G模块（EC600N，备用连接）
-
-2. **LAN接口**：卡1作为LAN、卡2和WiFi热点共享同一个子网（192.168.4.x）
-
-**IP地址分配**：
-- 卡1作为WAN时：从上级路由器通过DHCP获取IP（如192.168.1.x网段）
-- WiFi Station作为WAN时：从上级路由器通过DHCP获取IP（如192.168.1.x网段）
-- 4G模块作为WAN时：从运营商通过DHCP获取IP（如10.x.x.x网段）
-- 卡1作为LAN时：使用192.168.4.1（与卡2和WiFi热点共享子网）
-- 卡2：固定使用192.168.4.1（与卡1作为LAN时和WiFi热点共享子网）
-- WiFi热点：使用192.168.4.1（与卡1作为LAN时和卡2共享子网）
-
-**DHCP服务**：
-- 卡1作为LAN、卡2和WiFi热点共享DHCP地址池（192.168.4.100-192.168.4.200）
-- 下位设备连接到任一接口时，都能获取到同一子网内的IP地址
+<img src="https://raw.githubusercontent.com/espressif/esp-iot-bridge/master/components/iot_bridge/docs/_static/4g_nic_en.png" style="zoom:80%;" />
 
 ### 开发环境
 
@@ -87,15 +69,9 @@ Bridge ETH SPI MOSI GPIO number (3) → 3
 Bridge ETH SPI MISO GPIO number (46) → 46
 Bridge ETH SPI clock speed (MHz) (23) → 23   (最大值60MHz)
 Bridge ETH SPI CS0 GPIO number for SPI Ethernet module #1 (10) → 10
-Bridge ETH SPI Interrupt GPIO number SPI Ethernet module #1 (12) → 12
-Bridge ETH SPI PHY Reset GPIO number of SPI Ethernet Module #1 (38) → 38
+Bridge ETH SPI Interrupt GPIO number SPI Ethernet module #1 (11) → 11
+Bridge ETH SPI PHY Reset GPIO number of SPI Ethernet Module #1 (12) → 12
 Bridge ETH SPI PHY Address of SPI Ethernet Module #1 (1) → 1
-
-# 卡2配置
-Bridge ETH SPI CS1 GPIO number for SPI Ethernet module #2 (11) → 11
-Bridge ETH SPI Interrupt GPIO number SPI Ethernet module #2 (13) → 13
-Bridge ETH SPI PHY Reset GPIO number of SPI Ethernet Module #2 (34) → 34
-Bridge ETH SPI PHY Address of SPI Ethernet Module #2 (1) → 1
 ```
 
 #### 修改bridge_modem.c文件（espressif__iot_bridge 0.11.9 版本）
@@ -156,4 +132,13 @@ Add netif eth with b45c94b(commit id)
 [0;32mI (8028) bridge_modem: IP          : 10.44.120.176
 [0;32mI (8032) bridge_modem: Netmask     : 255.255.255.255
 [0;32mI (8037) bridge_modem: Gateway     : 10.64.64.64
-[0;32mI (8043) bridge_modem: Name Server1: 61.128.12
+[0;32mI (8043) bridge_modem: Name Server1: 61.128.128.68
+[0;32mI (8048) bridge_modem: Name Server2: 61.128.192.68
+[0;32mI (8053) bridge_modem: ~~~~~~~~~~~~~~
+[0;32mI (8058) esp-netif_lwip-ppp: Connected
+[0;32mI (8062) bridge_common: [WIFI_AP_DEF ]Name Server1: 61.128.128.68
+[0;32mI (8069) bridge_common: [ETH_LAN     ]Name Server1: 61.128.128.68
+[0;32mI (8076) bridge_modem: GOT ip event!!!
+[0;32mI (8080) bridge_modem: PPP state changed event 0
+[0;32mI (8087) main_task: Returned from app_main()
+```

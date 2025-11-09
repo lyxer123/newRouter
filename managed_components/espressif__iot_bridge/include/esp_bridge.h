@@ -89,42 +89,6 @@ esp_netif_t *esp_bridge_create_softap_netif(esp_netif_ip_info_t *ip_info, uint8_
 esp_netif_t *esp_bridge_create_eth_netif(esp_netif_ip_info_t *ip_info, uint8_t mac[6], bool data_forwarding, bool enable_dhcps);
 #endif
 
-// 添加双网卡支持的函数声明
-#if defined(CONFIG_BRIDGE_ETHERNET_NETIF_ENABLE)
-/**
-* @brief Create eth netif for bridge with dual NIC support.
-*
-* @param[in] ip_info: custom ip address, if set NULL, it will automatically be assigned.
-* @param[in] mac: custom mac address, if set NULL, it will automatically be assigned.
-* @param[in] data_forwarding: whether to use as data forwarding netif
-* @param[in] enable_dhcps: whether to enable DHCP server
-* @param[in] card_index: card index (0 for card1, 1 for card2)
-*
-* @return
-*      - instance: the netif instance created successfully
-*      - NULL: failed because some error occurred
-*/
-esp_netif_t *esp_bridge_create_eth_netif_dual(esp_netif_ip_info_t *ip_info, uint8_t mac[6], bool data_forwarding, bool enable_dhcps, int card_index);
-#endif
-
-// 添加双网卡网络接口创建函数声明
-#if defined(CONFIG_BRIDGE_ETHERNET_NETIF_ENABLE)
-/**
-* @brief Create netif for bridge with dual NIC support.
-*
-* @param[in] config: netif configuration
-* @param[in] custom_ip_info: custom ip address, if set NULL, it will automatically be assigned.
-* @param[in] custom_mac: custom mac address, if set NULL, it will automatically be assigned.
-* @param[in] enable_dhcps: whether to enable DHCP server
-* @param[in] card_index: card index (0 for card1, 1 for card2)
-*
-* @return
-*      - instance: the netif instance created successfully
-*      - NULL: failed because some error occurred
-*/
-esp_netif_t *esp_bridge_create_netif_dual(esp_netif_config_t* config, esp_netif_ip_info_t* custom_ip_info, uint8_t custom_mac[6], bool enable_dhcps, int card_index);
-#endif
-
 #if defined(CONFIG_BRIDGE_DATA_FORWARDING_NETIF_USB)
 /**
 * @brief Create usb netif for bridge.

@@ -13,8 +13,8 @@ end
 
 # Load bootloader symbols
 set confirm off
-    add-symbol-file E:/github/newRouter/build/bootloader/bootloader.elf
+    add-symbol-file C:/Users/yongx/Desktop/newRouter-0.0.3/build/bootloader/bootloader.elf
 set confirm on
 
 # Load application symbols
-file E:/github/newRouter/build/newRouter.elf
+file C:/Users/yongx/Desktop/newRouter-0.0.3/build/newRouter-0.0.3.elf
