@@ -6817,6 +6817,42 @@
                 "children": [
                     {
                         "children": [],
+                        "depends_on": "BRIDGE_EXTERNAL_NETIF_STATION && BRIDGE_ENABLE",
+                        "help": "Use Wi-Fi Provisioning over Web Server.",
+                        "id": "APP_BRIDGE_USE_WEB_SERVER",
+                        "name": "APP_BRIDGE_USE_WEB_SERVER",
+                        "range": null,
+                        "title": "Wi-Fi Provisioning over Web Server",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": "!IDF_TARGET_ESP32S2 && BRIDGE_EXTERNAL_NETIF_STATION && BRIDGE_ENABLE",
+                        "help": "Use Wi-Fi Provisioning over Bluetooth Low Energy.",
+                        "id": "APP_BRIDGE_USE_WIFI_PROVISIONING_OVER_BLE",
+                        "name": "APP_BRIDGE_USE_WIFI_PROVISIONING_OVER_BLE",
+                        "range": null,
+                        "title": "Wi-Fi Provisioning over Bluetooth Low Energy.",
+                        "type": "bool"
+                    }
+                ],
+                "depends_on": "BRIDGE_EXTERNAL_NETIF_STATION && BRIDGE_ENABLE",
+                "id": "bridge-misc-configuration-network-distribution",
+                "title": "Network Distribution",
+                "type": "menu"
+            }
+        ],
+        "depends_on": "BRIDGE_ENABLE",
+        "id": "bridge-misc-configuration",
+        "title": "Bridge Misc Configuration",
+        "type": "menu"
+    },
+    {
+        "children": [
+            {
+                "children": [
+                    {
+                        "children": [],
                         "depends_on": "<choice COMPILER_OPTIMIZATION>",
                         "help": null,
                         "id": "COMPILER_OPTIMIZATION_DEBUG",
@@ -8326,7 +8362,10 @@
                                                 "help": "Maximum GATT Server Profiles Count",
                                                 "id": "BT_GATT_MAX_SR_PROFILES",
                                                 "name": "BT_GATT_MAX_SR_PROFILES",
-                                                "range": null,
+                                                "range": [
+                                                    1,
+                                                    32
+                                                ],
                                                 "title": "Max GATT Server Profiles",
                                                 "type": "int"
                                             },
@@ -8336,7 +8375,10 @@
                                                 "help": "Maximum GATT Service Attributes Count",
                                                 "id": "BT_GATT_MAX_SR_ATTRIBUTES",
                                                 "name": "BT_GATT_MAX_SR_ATTRIBUTES",
-                                                "range": null,
+                                                "range": [
+                                                    1,
+                                                    500
+                                                ],
                                                 "title": "Max GATT Service Attributes",
                                                 "type": "int"
                                             },
@@ -8428,7 +8470,10 @@
                                                 "help": "Maximum GATTC cache characteristic count",
                                                 "id": "BT_GATTC_MAX_CACHE_CHAR",
                                                 "name": "BT_GATTC_MAX_CACHE_CHAR",
-                                                "range": null,
+                                                "range": [
+                                                    1,
+                                                    500
+                                                ],
                                                 "title": "Max gattc cache characteristic for discover",
                                                 "type": "int"
                                             },
@@ -8438,7 +8483,10 @@
                                                 "help": "Maximum GATTC notify(indication) register number",
                                                 "id": "BT_GATTC_NOTIF_REG_MAX",
                                                 "name": "BT_GATTC_NOTIF_REG_MAX",
-                                                "range": null,
+                                                "range": [
+                                                    1,
+                                                    64
+                                                ],
                                                 "title": "Max gattc notify(indication) register number",
                                                 "type": "int"
                                             },
@@ -8458,7 +8506,10 @@
                                                 "help": "The number of attempts to reconnect if the connection establishment failed",
                                                 "id": "BT_GATTC_CONNECT_RETRY_COUNT",
                                                 "name": "BT_GATTC_CONNECT_RETRY_COUNT",
-                                                "range": null,
+                                                "range": [
+                                                    0,
+                                                    255
+                                                ],
                                                 "title": "The number of attempts to reconnect if the connection establishment failed",
                                                 "type": "int"
                                             },
@@ -8468,7 +8519,10 @@
                                                 "help": "Bluetooth Connection establishment maximum time, if connection time exceeds this value, the connection\nestablishment fails, ESP_GATTC_OPEN_EVT or ESP_GATTS_OPEN_EVT is triggered.",
                                                 "id": "BT_BLE_ESTAB_LINK_CONN_TOUT",
                                                 "name": "BT_BLE_ESTAB_LINK_CONN_TOUT",
-                                                "range": null,
+                                                "range": [
+                                                    1,
+                                                    60
+                                                ],
                                                 "title": "Timeout of BLE connection establishment",
                                                 "type": "int"
                                             }
@@ -10457,7 +10511,10 @@
                                 "help": "Maximum BT/BLE connection count. The ESP32-C3/S3 chip supports a maximum of 10 instances,\nincluding ADV, SCAN and connections. The ESP32-C3/S3 chip can connect up to 9 devices if\nADV or SCAN uses only one. If ADV and SCAN are both used, The ESP32-C3/S3 chip is connected\nto a maximum of 8 devices. Because Bluetooth cannot reclaim used instances once ADV or SCAN\nis used.",
                                 "id": "BT_ACL_CONNECTIONS",
                                 "name": "BT_ACL_CONNECTIONS",
-                                "range": null,
+                                "range": [
+                                    1,
+                                    9
+                                ],
                                 "title": "BT/BLE MAX ACL CONNECTIONS(1~9)",
                                 "type": "int"
                             },
@@ -10507,7 +10564,10 @@
                                 "help": "The number of security records for peer devices.",
                                 "id": "BT_SMP_MAX_BONDS",
                                 "name": "BT_SMP_MAX_BONDS",
-                                "range": null,
+                                "range": [
+                                    1,
+                                    32
+                                ],
                                 "title": "BT/BLE maximum bond device count",
                                 "type": "int"
                             },
@@ -10527,7 +10587,10 @@
                                 "help": "Bluetooth Device name length shall be no larger than 248 octets, If the broadcast data cannot contain\nthe complete device name, then only the shortname will be displayed, the rest parts that can't fit in\nwill be truncated.",
                                 "id": "BT_MAX_DEVICE_NAME_LEN",
                                 "name": "BT_MAX_DEVICE_NAME_LEN",
-                                "range": null,
+                                "range": [
+                                    32,
+                                    248
+                                ],
                                 "title": "length of bluetooth device name",
                                 "type": "int"
                             },
@@ -10537,7 +10600,10 @@
                                 "help": "This set RPA timeout of Controller and Host.\nDefault is 900 s (15 minutes). Range is 1 s to 1 hour (3600 s).",
                                 "id": "BT_BLE_RPA_TIMEOUT",
                                 "name": "BT_BLE_RPA_TIMEOUT",
-                                "range": null,
+                                "range": [
+                                    1,
+                                    3600
+                                ],
                                 "title": "Timeout of resolvable private address",
                                 "type": "int"
                             },
@@ -12959,7 +13025,10 @@
                                 "help": "BLE maximum activities of bluetooth controller\uff0cboth of connections,\nscan , sync and adv(periodic adv, multi-adv). Each instance needs to\nconsume 828 bytes, you can save RAM by modifying the instance value\naccording to actual needs.",
                                 "id": "BT_CTRL_BLE_MAX_ACT",
                                 "name": "BT_CTRL_BLE_MAX_ACT",
-                                "range": null,
+                                "range": [
+                                    1,
+                                    10
+                                ],
                                 "title": "BLE Max Instances",
                                 "type": "int"
                             },
@@ -12979,7 +13048,10 @@
                                 "help": "BLE ACL buffer have two methods to be allocated. One is persistent allocating\n(allocate when controller initialise, never free until controller de-initialise)\nanother is dynamically allocating (allocate before TX and free after TX).",
                                 "id": "BT_CTRL_BLE_STATIC_ACL_TX_BUF_NB",
                                 "name": "BT_CTRL_BLE_STATIC_ACL_TX_BUF_NB",
-                                "range": null,
+                                "range": [
+                                    0,
+                                    12
+                                ],
                                 "title": "BLE static ACL TX buffer numbers",
                                 "type": "int"
                             },
@@ -13069,7 +13141,10 @@
                                 "help": "The maximum number of 5.0 extend duplicate",
                                 "id": "BT_CTRL_ADV_DUP_FILT_MAX",
                                 "name": "BT_CTRL_ADV_DUP_FILT_MAX",
-                                "range": null,
+                                "range": [
+                                    1,
+                                    500
+                                ],
                                 "title": "The maximum number of 5.0 extend duplicate scan filter",
                                 "type": "int"
                             },
@@ -13129,7 +13204,10 @@
                                 "help": "It is the threshold value of HW CCA, if the value is 30, it means CCA threshold is -30 dBm.\nIf the channel assessment result exceeds the CCA threshold (e.g. -75 dBm), indicating the channel is busy,\nthe hardware will not transmit packets on that channel.",
                                 "id": "BT_CTRL_HW_CCA_VAL",
                                 "name": "BT_CTRL_HW_CCA_VAL",
-                                "range": null,
+                                "range": [
+                                    20,
+                                    100
+                                ],
                                 "title": "CCA threshold value",
                                 "type": "int"
                             },
@@ -13461,7 +13539,10 @@
                                         "help": "The number of unprocessed advertising report that bluetooth host can save.If you set\n`BT_CTRL_BLE_ADV_REPORT_FLOW_CTRL_NUM` to a small value, this may cause adv packets lost.\nIf you set `BT_CTRL_BLE_ADV_REPORT_FLOW_CTRL_NUM` to a large value, bluetooth host may cache a\nlot of adv packets and this may cause system memory run out. For example, if you set\nit to 50, the maximum memory consumed by host is 35 * 50 bytes. Please set\n`BT_CTRL_BLE_ADV_REPORT_FLOW_CTRL_NUM` according to your system free memory and handle adv\npackets as fast as possible, otherwise it will cause adv packets lost.",
                                         "id": "BT_CTRL_BLE_ADV_REPORT_FLOW_CTRL_NUM",
                                         "name": "BT_CTRL_BLE_ADV_REPORT_FLOW_CTRL_NUM",
-                                        "range": null,
+                                        "range": [
+                                            50,
+                                            1000
+                                        ],
                                         "title": "BLE adv report flow control number",
                                         "type": "int"
                                     },
@@ -13471,7 +13552,10 @@
                                         "help": "When adv report flow control is enabled, The ADV lost event will be generated when the number\nof ADV packets lost in the controller reaches this threshold. It is better to set a larger value.\nIf you set `BT_CTRL_BLE_ADV_REPORT_DISCARD_THRSHOLD` to a small value or printf every adv lost event, it\nmay cause adv packets lost more.",
                                         "id": "BT_CTRL_BLE_ADV_REPORT_DISCARD_THRSHOLD",
                                         "name": "BT_CTRL_BLE_ADV_REPORT_DISCARD_THRSHOLD",
-                                        "range": null,
+                                        "range": [
+                                            1,
+                                            1000
+                                        ],
                                         "title": "BLE adv lost event threshold value",
                                         "type": "int"
                                     }
@@ -13542,7 +13626,10 @@
                                         "help": "Maximum number of devices which can be recorded in scan duplicate filter.\nWhen the maximum amount of device in the filter is reached, the cache will be refreshed.",
                                         "id": "BT_CTRL_SCAN_DUPL_CACHE_SIZE",
                                         "name": "BT_CTRL_SCAN_DUPL_CACHE_SIZE",
-                                        "range": null,
+                                        "range": [
+                                            10,
+                                            1000
+                                        ],
                                         "title": "Maximum number of devices in scan duplicate filter",
                                         "type": "int"
                                     },
@@ -13552,7 +13639,10 @@
                                         "help": "If the period value is non-zero, the controller will periodically clear the device information\nstored in the scan duuplicate filter. If it is 0, the scan duuplicate filter will not be cleared\nuntil the scanning is disabled. Duplicate advertisements for this period should not be sent to the\nHost in advertising report events.\nThere are two scenarios where the ADV packet will be repeatedly reported:\n1. The duplicate scan cache is full, the controller will delete the oldest device information and\nadd new device information.\n2. When the refresh period is up, the controller will clear all device information and start filtering\nagain.",
                                         "id": "BT_CTRL_DUPL_SCAN_CACHE_REFRESH_PERIOD",
                                         "name": "BT_CTRL_DUPL_SCAN_CACHE_REFRESH_PERIOD",
-                                        "range": null,
+                                        "range": [
+                                            0,
+                                            1000
+                                        ],
                                         "title": "Duplicate scan list refresh period (seconds)",
                                         "type": "int"
                                     },
@@ -36363,6 +36453,155 @@
                 "depends_on": null,
                 "id": "component-config-bridge-configuration",
                 "title": "Bridge Configuration",
+                "type": "menu"
+            },
+            {
+                "children": [
+                    {
+                        "children": [
+                            {
+                                "children": [],
+                                "depends_on": "!IDF_TARGET_ESP32S2 && <choice PROV_TRANSPORT>",
+                                "help": null,
+                                "id": "PROV_TRANSPORT_BLE",
+                                "name": "PROV_TRANSPORT_BLE",
+                                "range": null,
+                                "title": "BLE",
+                                "type": "bool"
+                            }
+                        ],
+                        "depends_on": null,
+                        "help": "Wi-Fi provisioning component offers both, SoftAP and BLE transports. Choose any one.",
+                        "id": "component-config-bridge-wi-fi-provisioning-configuration-provisioning-transport",
+                        "name": "PROV_TRANSPORT",
+                        "title": "Provisioning Transport",
+                        "type": "choice"
+                    },
+                    {
+                        "children": [
+                            {
+                                "children": [],
+                                "depends_on": "<choice PROV_SECURITY_VERSION>",
+                                "help": null,
+                                "id": "PROV_SECURITY_VERSION_1",
+                                "name": "PROV_SECURITY_VERSION_1",
+                                "range": null,
+                                "title": "Security version 1",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "<choice PROV_SECURITY_VERSION>",
+                                "help": null,
+                                "id": "PROV_SECURITY_VERSION_2",
+                                "name": "PROV_SECURITY_VERSION_2",
+                                "range": null,
+                                "title": "Security version 2",
+                                "type": "bool"
+                            }
+                        ],
+                        "depends_on": null,
+                        "help": "Wi-Fi provisioning component offers 3 security versions.\nThe component offers a choice between security version 1 and 2.",
+                        "id": "component-config-bridge-wi-fi-provisioning-configuration-protocomm-security-version",
+                        "name": "PROV_SECURITY_VERSION",
+                        "title": "Protocomm security version",
+                        "type": "choice"
+                    },
+                    {
+                        "children": [
+                            {
+                                "children": [],
+                                "depends_on": "PROV_SECURITY_VERSION_2 && <choice PROV_MODE>",
+                                "help": "This enables the development mode for security version 2.\nPlease note that this mode is NOT recommended for production purpose.",
+                                "id": "PROV_SEC2_DEV_MODE",
+                                "name": "PROV_SEC2_DEV_MODE",
+                                "range": null,
+                                "title": "Security version 2 development mode",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "PROV_SECURITY_VERSION_2 && <choice PROV_MODE>",
+                                "help": "This enables the production mode for security version 2.",
+                                "id": "PROV_SEC2_PROD_MODE",
+                                "name": "PROV_SEC2_PROD_MODE",
+                                "range": null,
+                                "title": "Security version 2 production mode",
+                                "type": "bool"
+                            }
+                        ],
+                        "depends_on": "PROV_SECURITY_VERSION_2",
+                        "help": null,
+                        "id": "component-config-bridge-wi-fi-provisioning-configuration-security-version-2-mode",
+                        "name": "PROV_MODE",
+                        "title": "Security version 2 mode",
+                        "type": "choice"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": null,
+                        "id": "PROV_TRANSPORT",
+                        "name": "PROV_TRANSPORT",
+                        "range": null,
+                        "title": null,
+                        "type": "int"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": "This erases the NVS to reset provisioned status of the device on every reboot.\nProvisioned status is determined by the Wi-Fi STA configuration, saved on the NVS.",
+                        "id": "PROV_RESET_PROVISIONED",
+                        "name": "PROV_RESET_PROVISIONED",
+                        "range": null,
+                        "title": "Reset provisioned status of the device",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [
+                            {
+                                "children": [],
+                                "depends_on": "PROV_RESET_PROV_MGR_ON_FAILURE",
+                                "help": "Set the Maximum retry to avoid reconnecting to an inexistent AP or if credentials\nare misconfigured. Provisioned credentials are erased and internal state machine\nis reset after this threshold is reached.",
+                                "id": "PROV_MGR_MAX_RETRY_CNT",
+                                "name": "PROV_MGR_MAX_RETRY_CNT",
+                                "range": null,
+                                "title": "Max retries before reseting provisioning state machine",
+                                "type": "int"
+                            }
+                        ],
+                        "depends_on": null,
+                        "help": "Enable reseting provisioned credentials and state machine after session failure.\nThis will restart the provisioning service after retries are exhausted.",
+                        "id": "PROV_RESET_PROV_MGR_ON_FAILURE",
+                        "name": "PROV_RESET_PROV_MGR_ON_FAILURE",
+                        "range": null,
+                        "title": "Reset provisioned credentials and state machine after session failure",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": null,
+                        "help": "Show the QR code for provisioning.",
+                        "id": "PROV_SHOW_QR",
+                        "name": "PROV_SHOW_QR",
+                        "range": null,
+                        "title": "Show provisioning QR code",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": "BT_BLUEDROID_ENABLED && (IDF_TARGET_ESP32C3 || IDF_TARGET_ESP32S3)",
+                        "help": "This enables BLE 4.2 features for Bluedroid.",
+                        "id": "PROV_USING_BLUEDROID",
+                        "name": "PROV_USING_BLUEDROID",
+                        "range": null,
+                        "title": null,
+                        "type": "bool"
+                    }
+                ],
+                "depends_on": null,
+                "id": "component-config-bridge-wi-fi-provisioning-configuration",
+                "title": "Bridge Wi-Fi Provisioning Configuration",
                 "type": "menu"
             }
         ],

@@ -1,2 +1,2 @@
 --flash_mode dio --flash_freq 80m --flash_size 8MB
-0x10000 newRouter-0.0.3.bin
+0x10000 newRouter.bin

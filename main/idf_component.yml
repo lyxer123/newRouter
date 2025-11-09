@@ -2,6 +2,12 @@ dependencies:
   espressif/iot_bridge:
     version: '*'
   idf: '>=5.0'
+  wifi_prov_mgr:
+    git: https://github.com/espressif/esp-iot-bridge.git
+    path: components/wifi_prov_mgr
+  web_server:
+    git: https://github.com/espressif/esp-iot-bridge.git
+    path: components/web_server
   usb_device:
     git: https://github.com/espressif/esp-iot-bridge.git
     path: components/usb/usb_device

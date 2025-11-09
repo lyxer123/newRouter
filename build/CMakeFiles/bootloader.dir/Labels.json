@@ -2,34 +2,34 @@
 	"sources" : 
 	[
 		{
-			"file" : "C:/Users/yongx/Desktop/newRouter-0.0.3/build/CMakeFiles/bootloader"
+			"file" : "E:/github/newRouter/build/CMakeFiles/bootloader"
 		},
 		{
-			"file" : "C:/Users/yongx/Desktop/newRouter-0.0.3/build/CMakeFiles/bootloader.rule"
+			"file" : "E:/github/newRouter/build/CMakeFiles/bootloader.rule"
 		},
 		{
-			"file" : "C:/Users/yongx/Desktop/newRouter-0.0.3/build/CMakeFiles/bootloader-complete.rule"
+			"file" : "E:/github/newRouter/build/CMakeFiles/bootloader-complete.rule"
 		},
 		{
-			"file" : "C:/Users/yongx/Desktop/newRouter-0.0.3/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule"
+			"file" : "E:/github/newRouter/build/bootloader-prefix/src/bootloader-stamp/bootloader-build.rule"
 		},
 		{
-			"file" : "C:/Users/yongx/Desktop/newRouter-0.0.3/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule"
+			"file" : "E:/github/newRouter/build/bootloader-prefix/src/bootloader-stamp/bootloader-configure.rule"
 		},
 		{
-			"file" : "C:/Users/yongx/Desktop/newRouter-0.0.3/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule"
+			"file" : "E:/github/newRouter/build/bootloader-prefix/src/bootloader-stamp/bootloader-download.rule"
 		},
 		{
-			"file" : "C:/Users/yongx/Desktop/newRouter-0.0.3/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule"
+			"file" : "E:/github/newRouter/build/bootloader-prefix/src/bootloader-stamp/bootloader-install.rule"
 		},
 		{
-			"file" : "C:/Users/yongx/Desktop/newRouter-0.0.3/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule"
+			"file" : "E:/github/newRouter/build/bootloader-prefix/src/bootloader-stamp/bootloader-mkdir.rule"
 		},
 		{
-			"file" : "C:/Users/yongx/Desktop/newRouter-0.0.3/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule"
+			"file" : "E:/github/newRouter/build/bootloader-prefix/src/bootloader-stamp/bootloader-patch.rule"
 		},
 		{
-			"file" : "C:/Users/yongx/Desktop/newRouter-0.0.3/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule"
+			"file" : "E:/github/newRouter/build/bootloader-prefix/src/bootloader-stamp/bootloader-update.rule"
 		}
 	],
 	"target" : 

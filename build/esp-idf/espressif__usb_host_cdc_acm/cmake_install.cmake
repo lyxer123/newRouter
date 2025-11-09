@@ -1,8 +1,8 @@
-# Install script for directory: C:/Users/yongx/Desktop/newRouter-0.0.3/managed_components/espressif__usb_host_cdc_acm
+# Install script for directory: E:/github/newRouter/managed_components/espressif__usb_host_cdc_acm
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/newRouter-0.0.3")
+  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/newRouter")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 

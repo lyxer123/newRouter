@@ -10,7 +10,7 @@ dependencies:
       type: service
     version: 0.5.3
   espressif/esp_modem:
-    component_hash: b541c3f5765d3ba062c0d004b9ca6da6d0af908293421c2dbe046c537fb2a011
+    component_hash: 40af7f39c6c8c0c85c98014721fca8d9d2186f18f70645c66b94548192cf1e03
     dependencies:
     - name: idf
       require: private
@@ -18,7 +18,7 @@ dependencies:
     source:
       registry_url: https://components.espressif.com
       type: service
-    version: 1.4.0
+    version: 1.4.2
   espressif/esp_modem_usb_dte:
     component_hash: 49f66a3bd49202e36168cf092a1dc453548d488e8f4560ac7e7d21802583e8a7
     dependencies:
@@ -84,8 +84,15 @@ dependencies:
       registry_url: https://components.espressif.com/
       type: service
     version: 1.0.1
+  espressif/qrcode:
+    component_hash: 3b493771bc5d6ad30cbf87c25bf784aada8a08c941504355b55d6b75518ed7bc
+    dependencies: []
+    source:
+      registry_url: https://components.espressif.com/
+      type: service
+    version: 0.1.0~2
   espressif/tinyusb:
-    component_hash: aec03a6402b66695719fa1121b7d9eee8031922df5c8a3f4b54a51874f65bbd6
+    component_hash: 7fa5016d792d8e4025a8352b4fd4af7c124947647037e9d2449c9e0b47fdf663
     dependencies:
     - name: idf
       require: private
@@ -98,7 +105,7 @@ dependencies:
     - esp32s3
     - esp32p4
     - esp32h4
-    version: 0.18.0~5
+    version: 0.18.0~6
   espressif/usb_host_cdc_acm:
     component_hash: 0ca1a47f3b568ad539f2db7938aaa2a64f3017bd50a5ee9b410d2f9d7425ecef
     dependencies:
@@ -126,9 +133,31 @@ dependencies:
     source:
       type: idf
     version: 5.5.1
+  web_server:
+    component_hash: 41939f6f6c092fef4847c4bc615d0c75bc5240cdbb01b3c75b50cddc08124023
+    dependencies: []
+    source:
+      git: https://github.com/espressif/esp-iot-bridge.git
+      path: components/web_server
+      type: git
+    version: f824744f1f9c38ebbdd3de29fb66be3d7762bcbf
+  wifi_prov_mgr:
+    component_hash: e2d40e3385e93bb6771ae6c2aa7efdb67a1f3fea59fdf21c3f95ccb45fa0f4cf
+    dependencies:
+    - name: idf
+      version: '>=4.3'
+    - name: espressif/qrcode
+      version: ^0.1.0
+    source:
+      git: https://github.com/espressif/esp-iot-bridge.git
+      path: components/wifi_prov_mgr
+      type: git
+    version: f824744f1f9c38ebbdd3de29fb66be3d7762bcbf
 direct_dependencies:
 - espressif/iot_bridge
 - idf
-manifest_hash: 671b8db589ae149b710aea348af64f889ccc716bf0d7404e11bbc955b28c100a
+- web_server
+- wifi_prov_mgr
+manifest_hash: 7106ce53157610063a8807aaf87280c92cc31d143671383b22886aa3fb78bf48
 target: esp32s3
 version: 2.0.0
