@@ -84,6 +84,141 @@ ESP-Mesh-Lite与现有WiFi功能的兼容性基于以下机制：
 
 ESP-Mesh-Lite的实现机制与现有WiFi功能完全兼容，因为它同样基于SoftAP + Station模式构建。
 
+### 3.2 WiFi热点配置（SoftAP）
+
+#### 3.2.1 当前配置方式
+
+在集成ESP-Mesh-Lite后，ESP32S3的WiFi热点（SoftAP）配置保持不变，仍然通过以下方式配置：
+
+```c
+#if defined(CONFIG_BRIDGE_DATA_FORWARDING_NETIF_SOFTAP)
+    wifi_config_t wifi_cfg = {
+        .ap = {
+            .ssid = CONFIG_BRIDGE_SOFTAP_SSID,
+            .password = CONFIG_BRIDGE_SOFTAP_PASSWORD,
+        }
+    };
+    esp_bridge_wifi_set_config(WIFI_IF_AP, &wifi_cfg);
+#endif
+```
+
+这些配置值定义在`sdkconfig`文件中：
+- SSID: `CONFIG_BRIDGE_SOFTAP_SSID` (默认为 "ESP_Bridge")
+- 密码: `CONFIG_BRIDGE_SOFTAP_PASSWORD` (默认为 "12345678")
+
+#### 3.2.2 配置修改方法
+
+可以通过以下几种方式修改WiFi热点的SSID和密码：
+
+1. **通过menuconfig配置界面**：
+   ```bash
+   idf.py menuconfig
+   ```
+   导航到：
+   - Bridge Configuration → SoftAP Config
+   - 修改"SoftAP SSID"和"SoftAP Password"值
+
+2. **直接在代码中修改**：
+   ```c
+   #if defined(CONFIG_BRIDGE_DATA_FORWARDING_NETIF_SOFTAP)
+       wifi_config_t wifi_cfg = {
+           .ap = {
+               .ssid = "您的自定义SSID",
+               .password = "您的自定义密码",
+           }
+       };
+       esp_bridge_wifi_set_config(WIFI_IF_AP, &wifi_cfg);
+   #endif
+   ```
+
+3. **使用esp_bridge_wifi_set API**：
+   ```c
+   esp_bridge_wifi_set(WIFI_MODE_AP, "您的自定义SSID", "您的自定义密码", NULL);
+   ```
+
+#### 3.2.3 MAC地址后缀配置
+
+默认情况下，SoftAP的SSID会自动添加设备MAC地址后缀，以区分不同设备：
+- 配置项：`CONFIG_BRIDGE_SOFTAP_SSID_END_WITH_THE_MAC=y`
+- 格式：原SSID + "_" + MAC地址后3字节（如：ESP_Bridge_a1b2c3）
+
+### 3.3 Mesh网络与上级路由器共存
+
+#### 3.3.1 共存机制
+
+ESP-Mesh-Lite可以与上级路由器数据完全共存：
+
+1. **WiFi Station连接**：设备可以通过WiFi Station接口连接到上级路由器获取互联网访问
+2. **Mesh网络通信**：设备同时参与Mesh网络，与其他Mesh节点通信
+3. **独立工作**：两种连接方式独立工作，互不干扰
+
+#### 3.3.2 网络优先级设计
+
+为确保网络连接的智能切换，系统采用以下优先级设计：
+- 4G网络：优先级最高（route_prio = 50）
+- Mesh网络：优先级中等（route_prio = 30）
+- WiFi Station接口：优先级较低（route_prio = 20）
+- 以太网接口：优先级较低（route_prio = 10）
+- WiFi SoftAP接口：优先级最低（route_prio = 10）
+
+#### 3.3.3 工作场景
+
+1. **正常工作场景**：
+   - 设备通过WiFi Station连接到上级路由器
+   - 同时参与Mesh网络，为其他Mesh节点提供通信路径
+   - 下级设备通过SoftAP连接到本设备
+
+2. **路由器断开场景**：
+   - WiFi Station连接断开
+   - Mesh网络成为主要通信路径
+   - 通过其他Mesh节点访问互联网（如果其他节点仍有连接）
+
+3. **4G和路由器都断开场景**：
+   - Mesh网络成为唯一通信路径
+   - 设备间通过Mesh网络保持通信
+   - 下级设备仍可通过SoftAP连接到本设备
+
+### 3.4 网络接口配置示例
+
+#### 3.4.1 多接口协同工作配置
+
+```c
+// WiFi SoftAP配置（本地热点）
+#if defined(CONFIG_BRIDGE_DATA_FORWARDING_NETIF_SOFTAP)
+    wifi_config_t wifi_cfg = {
+        .ap = {
+            .ssid = "MyDevice_AP",
+            .password = "MySecurePassword",
+        }
+    };
+    esp_bridge_wifi_set_config(WIFI_IF_AP, &wifi_cfg);
+#endif
+
+// WiFi Station配置（连接上级路由器）
+#if defined(CONFIG_BRIDGE_EXTERNAL_NETIF_STATION)
+    wifi_config_t sta_cfg = {
+        .sta = {
+            .ssid = "UpstreamRouter",
+            .password = "RouterPassword",
+        }
+    };
+    esp_bridge_wifi_set_config(WIFI_IF_STA, &sta_cfg);
+    esp_wifi_connect();
+#endif
+```
+
+#### 3.4.2 动态配置更新
+
+可以通过以下方式动态更新WiFi配置：
+
+```c
+// 更新SoftAP配置
+esp_bridge_wifi_set(WIFI_MODE_AP, "NewSSID", "NewPassword", NULL);
+
+// 更新Station配置
+esp_bridge_wifi_set(WIFI_MODE_STA, "NewRouterSSID", "NewRouterPassword", NULL);
+```
+
 ### 3.5 网络架构设计
 ```
 设备A (4G连接正常)           设备B (4G断开)

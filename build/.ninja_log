@@ -2903,3 +2903,5 @@
 17899	18232	7844027928188417	E:/github/newRouter/build/.bin_timestamp	931beb32ae4488f8
 18232	18327	7844027928264803	esp-idf/esptool_py/CMakeFiles/app_check_size	486a8c9caaafb04a
 18232	18327	7844027928264803	E:/github/newRouter/build/esp-idf/esptool_py/CMakeFiles/app_check_size	486a8c9caaafb04a
+85	37648145	7843999456508803	CMakeFiles/confserver	f3cd155d1dc1846c
+85	37648145	7843999456508803	E:/github/newRouter/build/CMakeFiles/confserver	f3cd155d1dc1846c
